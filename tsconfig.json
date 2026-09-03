@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["vitest.config.ts"],
+  "references": [
+    { "path": "./packages/core/tsconfig.build.json" },
+    { "path": "./packages/bank/tsconfig.build.json" },
+    { "path": "./packages/jpyc/tsconfig.build.json" },
+    { "path": "./packages/scanner/tsconfig.build.json" },
+    { "path": "./packages/cli/tsconfig.build.json" },
+    { "path": "./packages/action/tsconfig.build.json" }
+  ]
+}

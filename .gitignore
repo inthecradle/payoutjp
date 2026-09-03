@@ -1,0 +1,14 @@
+node_modules/
+.pnpm-store/
+packages/*/dist/
+packages/*/.cache/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store
+.claude/settings.local.json
+
+# Customer-local data must never be committed by default.
+profiles/local/
+registries/local/
+reports/
