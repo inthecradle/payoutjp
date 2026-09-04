@@ -11,3 +11,12 @@ export {
   type RegistryId,
   type RuleId,
 } from "./identifiers.js";
+
+export {
+  isItemStatus,
+  isSeverity,
+  type ItemStatus,
+  itemStatusValues,
+  type Severity,
+  severityValues,
+} from "./status.js";
