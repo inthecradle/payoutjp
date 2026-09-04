@@ -1,2 +1,3 @@
-/** Placeholder package version for the repository bootstrap. */
-export const version = "0.0.0";
+export { version } from "./version.js";
+
+export { runCli, type RunCliOptions } from "./application.js";

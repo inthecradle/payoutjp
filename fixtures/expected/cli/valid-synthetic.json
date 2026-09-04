@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "payoutjp",
+    "version": "0.0.0"
+  },
+  "status": "PASS",
+  "profiles": [
+    {
+      "id": "bank-synthetic-test",
+      "version": "0.1.0",
+      "status": "verified"
+    }
+  ],
+  "registries": [
+    {
+      "id": "banks-synthetic",
+      "version": "2026-09-04",
+      "sha256": "ab0eb10a2d56a953a83dc54dd0c0567e0e3e16c8a1f9f3bd8db1ac99bb26a45a"
+    }
+  ],
+  "summary": {
+    "totalItems": 1,
+    "passedItems": 1,
+    "warningItems": 0,
+    "failedItems": 0,
+    "errors": 0,
+    "warnings": 0,
+    "infos": 0
+  },
+  "items": [
+    {
+      "id": "recipient-synthetic-001",
+      "index": 0,
+      "rail": "bank_transfer",
+      "status": "PASS",
+      "findings": []
+    }
+  ]
+}

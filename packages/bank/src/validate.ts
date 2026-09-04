@@ -21,6 +21,7 @@ export interface ValidateBankTransferDestinationV1Options {
   readonly profile?: CompatibilityProfileV1;
   readonly registries?: ReadonlyMap<string, RegistryEnvelopeV1<BankDirectoryRegistryV1>>;
   readonly itemIndex?: number;
+  readonly allowExperimental?: boolean;
 }
 
 function validateItemIndex(value: number): number {
@@ -93,6 +94,9 @@ export function validateBankTransferDestinationV1(
   const destination: BankTransferDestinationV1 = parsed.data;
   const profile = loadCompatibilityProfileV1(options.profile ?? bankGenericJpProfileV1, {
     rules: bankRules,
+    ...(options.allowExperimental === undefined
+      ? {}
+      : { allowExperimental: options.allowExperimental }),
   });
   if (profile.rail !== "bank_transfer") {
     throw new PayoutJpConfigurationError("PJP_CONFIG_INVALID");

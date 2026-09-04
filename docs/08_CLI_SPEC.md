@@ -2,10 +2,10 @@
 
 Binary name: `payoutjp`
 
-> **Implementation status:** The CLI package is currently a placeholder. The first implemented
-> command set will be limited to the selected validation workflow, text/JSON output, and the exit
-> code policy. `scan` and dedicated Action integration are deferred. Possible Registry diff or
-> impact commands have no approved flags or data contracts yet.
+> **Implementation status:** PJP-401–PJP-403, PJP-406, and PJP-410–PJP-412 are implemented as a
+> JSON single-Bank-destination `validate` command with text/JSON output and the exit-code policy.
+> The other commands, YAML/CSV input, JPYC CLI adaptation, `scan`, and dedicated Action integration
+> remain deferred. Possible Registry diff or impact commands have no approved contracts yet.
 
 ## 1. Global behavior
 
@@ -18,11 +18,11 @@ Global options:
 | Option | Default | Description |
 |---|---|---|
 | `--config <path>` | `./payoutjp.config.yml` if present | Explicit config file. No parent-directory traversal. |
-| `--format <text|json|sarif|junit>` | `text` | Output renderer. SARIF/JUnit are RC features. |
+| `--format <text|json>` | `text` | Implemented output renderer. SARIF/JUnit remain RC features. |
 | `--output <path>` | stdout | Write canonical report to file. |
 | `--fail-on <error|warning|never>` | config or `error` | Exit threshold. |
 | `--profile <id[@version]>` | input/config dependent | Profile selection. |
-| `--experimental` | false | Permit experimental bundled Profiles. |
+| `--experimental` | false | Permit an experimental local Profile. |
 | `--quiet` | false | Suppress non-report informational output. |
 | `--version` | — | Print CLI version. |
 | `--help` | — | Print help. |
@@ -47,27 +47,25 @@ Rules:
 
 ### 3.1 `validate`
 
-Validate one JSON or YAML request/destination.
+Validate one UTF-8 JSON Bank request or destination.
 
 ```bash
 payoutjp validate <input> --profile <profile>
 ```
 
-Options:
+Option:
 
-- `--application-config <path>`: optional JPYC application configuration file.
-- `--rail <bank_transfer|jpyc>`: required only when input is a bare destination and rail cannot be inferred.
+- `--rail <bank_transfer>`: optional explicit rail assertion for a bare destination.
 
 Examples:
 
 ```bash
-payoutjp validate fixtures/bank/valid.json \
+payoutjp validate fixtures/bank/destinations/valid-synthetic.json \
   --profile bank-generic-jp@0.1.0
-
-payoutjp validate fixtures/jpyc/valid.yml \
-  --profile jpyc-current-mainnet@2026.09.02 \
-  --application-config fixtures/jpyc/config.json
 ```
+
+Sections 3.2–3.6 describe the target-state command design only and are not exposed by the current
+binary.
 
 ### 3.2 `audit`
 
@@ -155,28 +153,36 @@ It does not fetch updates.
 
 ### Full request wrapper
 
-```yaml
-schemaVersion: "1"
-profileId: bank-generic-jp@0.1.0
-destination:
-  schemaVersion: "1"
-  rail: bank_transfer
-  bankCode: "1234"
-  branchCode: "001"
-  accountType: ordinary
-  accountNumber: "0123456"
-  accountHolder: "カ）サンプル"
+```json
+{
+  "schemaVersion": "1",
+  "profileId": "bank-generic-jp@0.1.0",
+  "destination": {
+    "schemaVersion": "1",
+    "rail": "bank_transfer",
+    "bankCode": "1234",
+    "branchCode": "001",
+    "accountType": "ordinary",
+    "accountNumber": "0123456",
+    "accountHolder": "カ）サンプル"
+  }
+}
 ```
 
 ### Bare destination
 
 Allowed when `--profile` is supplied.
 
-```yaml
-schemaVersion: "1"
-rail: jpyc
-chainId: 137
-walletAddress: "0x1111111111111111111111111111111111111111"
+```json
+{
+  "schemaVersion": "1",
+  "rail": "bank_transfer",
+  "bankCode": "1234",
+  "branchCode": "001",
+  "accountType": "ordinary",
+  "accountNumber": "0123456",
+  "accountHolder": "カ）サンプル"
+}
 ```
 
 ## 5. Output channels
@@ -204,16 +210,16 @@ Items: N  Passed: N  Warnings: N  Failed: N
 Finding format:
 
 ```text
-ERROR JPYC-CONTRACT-002 config/jpyc.yml:8:18
-Configured JPYC contract does not match the current official registry entry for chain 137.
-Observed: 0x1234…abcd
-Expected: current contract in jpyc-official-mainnet@2026-09-02
-Action: replace with the contract from the selected registry after review.
+ERROR BANK-NUMBER-001 destination.accountNumber
+Account number must contain only ASCII digits.
+Observed: *****56
+Expected: one or more ASCII digits
+Action: Confirm the account number without converting or padding it automatically.
 ```
 
 ## 7. JSON output
 
-Must exactly match `ValidationReportV1` or `ScanReportV1`. Canonical JSON:
+The implemented `validate` JSON output exactly matches `ValidationReportV1`. Canonical JSON:
 
 - UTF-8
 - two-space indentation for file/stdout renderer
@@ -263,7 +269,7 @@ A user-facing error must include:
 
 ## 12. CLI acceptance tests
 
-- Valid JSON/YAML returns code 0.
+- Valid JSON for the implemented Bank subset returns code 0; YAML remains deferred.
 - Invalid schema returns code 2 or structured schema finding according to command contract.
 - FAIL returns code 1.
 - JSON stdout parses with no extra text.

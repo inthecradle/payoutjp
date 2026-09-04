@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "profileId": "bank-generic-jp@0.1.0",
+  "destination": {
+    "schemaVersion": "1",
+    "rail": "bank_transfer",
+    "id": "recipient-warning-001",
+    "bankCode": "1234",
+    "branchCode": "001",
+    "accountType": "ordinary",
+    "accountNumber": "0123456",
+    "accountHolder": "ガ"
+  }
+}

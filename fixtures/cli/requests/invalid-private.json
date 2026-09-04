@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "profileId": "bank-generic-jp@0.1.0",
+  "destination": {
+    "schemaVersion": "1",
+    "rail": "bank_transfer",
+    "id": "recipient-private-fixture",
+    "bankCode": "1234",
+    "branchCode": "001",
+    "accountType": "ordinary",
+    "accountNumber": "12345SECRET",
+    "accountHolder": " TOP SECRET HOLDER"
+  }
+}

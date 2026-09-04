@@ -3,8 +3,9 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: early development. The M0 workspace, M1 Core engine, M2 Bank subset, and M3 JPYC
-> validation are implemented. The CLI, scanner, and action packages remain placeholders.
+> Status: early development. The M0 workspace, M1 Core engine, M2 Bank subset, M3 JPYC
+> validation, and authorized M4 Bank CLI subset are implemented. Scanner and Action remain
+> placeholders.
 
 ## Design goals
 
@@ -39,11 +40,27 @@ packages/
 
 `@payoutjp/core` provides the deterministic validation contracts and engine. `@payoutjp/bank`
 provides conservative Bank validation. `@payoutjp/jpyc` provides JPYC destination and application
-configuration validation against an exact official Registry snapshot. The other packages retain
-bootstrap exports.
+configuration validation against an exact official Registry snapshot. `@payoutjp/cli` provides the
+implemented JSON single-Bank-destination `validate` command with text/JSON reports and CI exit
+codes. Scanner and Action retain bootstrap exports.
 
 Production bank data, provider-specific Bank rules, experimental Zengin/Yucho Profiles, Scanner,
 and GitHub Action behavior remain outside the implemented scope.
+
+## CLI
+
+The current CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
+select a Profile explicitly:
+
+```sh
+node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthetic.json \
+  --profile bank-generic-jp@0.1.0
+```
+
+Use `--format json`, `--output <path>`, and `--fail-on <error|warning|never>` for CI. An explicit
+`--config` or `./payoutjp.config.yml` may provide `failOn` and local JSON Profile/Registry paths;
+relative paths resolve from the config file. YAML/CSV input, batch audit, profile/registry discovery,
+JPYC CLI validation, Scanner, and dedicated Action behavior are not included in this M4 subset.
 
 ## Development
 

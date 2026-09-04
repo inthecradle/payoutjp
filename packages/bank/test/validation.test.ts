@@ -237,6 +237,27 @@ describe("Account holder rules", () => {
 });
 
 describe("Profile and Registry enforcement", () => {
+  it("requires explicit permission to validate with an experimental Profile", () => {
+    const experimentalProfile = loadCompatibilityProfileV1(
+      {
+        ...bankGenericJpProfileV1,
+        id: "bank-experimental-test",
+        status: "experimental",
+      },
+      { rules: bankRules, allowExperimental: true },
+    );
+
+    expect(() =>
+      validateBankTransferDestinationV1(validDestination, { profile: experimentalProfile }),
+    ).toThrow(new PayoutJpConfigurationError("PJP_PROFILE_STATUS_NOT_ALLOWED"));
+    expect(
+      validateBankTransferDestinationV1(validDestination, {
+        profile: experimentalProfile,
+        allowExperimental: true,
+      }),
+    ).toEqual([]);
+  });
+
   it("exports exactly the authorized non-experimental Bank rule catalog", () => {
     expect(bankRules.map((rule) => rule.id)).toEqual([
       "BANK-BRANCH-001",

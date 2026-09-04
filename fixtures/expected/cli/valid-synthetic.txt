@@ -1,0 +1,5 @@
+PayoutJP: PASS
+Tool: payoutjp@0.0.0
+Profiles: bank-synthetic-test@0.1.0
+Registries: banks-synthetic@2026-09-04
+Items: 1  Passed: 1  Warnings: 0  Failed: 0

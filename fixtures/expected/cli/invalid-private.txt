@@ -1,0 +1,23 @@
+PayoutJP: FAIL
+Tool: payoutjp@0.0.0
+Profiles: bank-generic-jp@0.1.0
+Registries: (none)
+Items: 1  Passed: 0  Warnings: 0  Failed: 1
+
+Item: recipient-private-fixture (FAIL)
+ERROR BANK-NUMBER-001 destination.accountNumber
+Account number must contain only ASCII digits.
+Observed: *********ET
+Expected: one or more ASCII digits
+Action: Confirm the account number without converting or padding it automatically.
+
+ERROR BANK-NUMBER-002 destination.accountNumber
+Account number length is outside the selected Profile limits.
+Observed: *********ET
+Expected: 1 to 7 characters
+Action: Confirm the account number without adding or removing leading zeroes.
+
+WARNING BANK-HOLDER-002 destination.accountHolder
+Account holder contains leading or trailing whitespace.
+Observed: <redacted>
+Action: Review surrounding whitespace without changing the value automatically.

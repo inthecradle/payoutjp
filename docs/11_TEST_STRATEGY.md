@@ -164,6 +164,10 @@ Assertions:
 - output file creation
 - no sensitive values in any output
 
+The implemented M4 CLI suite runs the built binary as a child process and covers text/JSON golden
+output, config and flag precedence, Profile/Registry loading, the experimental gate, the complete
+`fail-on` matrix, exit codes 0/1/2/4, output files, and redaction across stdout/stderr.
+
 ## 9. GitHub Action tests
 
 - unit test action input mapping with mocked `@actions/core`.

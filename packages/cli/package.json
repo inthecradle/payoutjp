@@ -12,6 +12,9 @@
       "import": "./dist/index.js"
     }
   },
+  "bin": {
+    "payoutjp": "./dist/main.js"
+  },
   "files": [
     "dist"
   ],
@@ -21,5 +24,12 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "clean": "tsc -b tsconfig.build.json --clean"
+  },
+  "dependencies": {
+    "@payoutjp/bank": "workspace:*",
+    "@payoutjp/core": "workspace:*",
+    "commander": "^15.0.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.5.4"
   }
 }

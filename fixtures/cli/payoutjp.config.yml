@@ -1,0 +1,9 @@
+version: 1
+failOn: error
+redaction: strict
+
+paths:
+  profiles:
+    - ../bank/profiles
+  registries:
+    - ../bank/registry

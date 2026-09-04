@@ -2,8 +2,8 @@
 
 ## 1. Proposed repository tree
 
-M0 creates all six package boundaries below. The `jpyc`, `scanner`, and `action` packages remain
-buildable placeholders until their domain features are selected for implementation.
+M0 created all six package boundaries below. Core, Bank, JPYC, and the authorized Bank CLI subset
+are implemented; Scanner and Action remain buildable placeholders until separately authorized.
 
 ```text
 .
