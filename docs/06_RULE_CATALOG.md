@@ -1,8 +1,9 @@
 # 06 — Initial Rule Catalog
 
-> **Implementation status:** These Bank, JPYC, and Scanner rule lists are candidate target-state
-> catalogs. None of the domain rules are implemented in the current M0 packages. Registry
-> change-impact rules also require a separately specified change taxonomy before IDs are assigned.
+> **Implementation status:** The authorized M2 Bank subset implements `BANK-CODE-001` through
+> `BANK-HOLDER-006` as applicable, excluding `BANK-HOLDER-007`. The experimental Bank rules,
+> JPYC rules, Scanner rules, and Registry change-impact rules remain unimplemented. Registry
+> change-impact also requires a separately specified change taxonomy before IDs are assigned.
 
 ## 1. Rule policy
 
@@ -63,6 +64,13 @@ Configuration errors may be surfaced as application errors before normal rule ex
 - A synthetic Registry is sufficient for tests but not a production claim.
 - Account number left-padding is never auto-applied.
 - Account holder findings never output raw input.
+- `BANK-HOLDER-005` uses a Profile-declared exact Unicode character set. `BANK-HOLDER-006`
+  supports UTF-8 byte limits in the authorized subset; other bank encodings require sourced,
+  explicitly authorized Profiles.
+- `active`, `closed`, and `unknown` are Registry metadata. The M2 existence rules do not infer a
+  closure policy for which no stable Rule ID or Profile behavior has been specified.
+- `BANK-HOLDER-007` remains deferred because no conservative, provider-neutral expectation has
+  been approved.
 
 ## 5. Experimental bank rules
 

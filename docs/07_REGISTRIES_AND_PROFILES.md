@@ -147,6 +147,18 @@ Use a synthetic Registry containing fictional codes and branches, for example:
 
 This allows full implementation and testing without making claims about real institutions.
 
+The checked-in M2 assets are:
+
+- `fixtures/bank/registry/banks-synthetic.json`, whose provenance explicitly labels every entry as
+  fictional;
+- `fixtures/bank/profiles/bank-synthetic-test.json`, which pins that Registry digest and exercises
+  Registry, character-set, and UTF-8 byte-limit rules;
+- `fixtures/bank/destinations/valid-synthetic.json`, a fictional integration destination.
+
+Registry status is preserved as metadata. Until a closure-policy rule is specified, existence and
+ownership checks treat `active`, `closed`, `unknown`, and omitted status entries as present rather
+than inventing operational acceptance semantics.
+
 ### Production launch blocker
 
 The production source must satisfy:
@@ -186,6 +198,14 @@ accountHolder:
 ```
 
 This Profile does not claim acceptance by every bank. Registry existence rules are enabled only when an approved Registry is supplied.
+
+The bundled implementation therefore enables only syntax, account-type, account-number,
+presence/whitespace/control-character, and NFC-difference checks. It does not pin a Registry or
+declare a universal account-holder character set or byte maximum.
+
+The reusable character-set rule accepts an exact Profile-declared Unicode character set. The
+encoded-length rule supports UTF-8 in the authorized M2 subset. CP932/Shift-JIS and other
+provider-specific encoding claims remain deferred with the experimental Profile work.
 
 ### 7.2 `zengin-fb-draft@0.1.0-experimental`
 

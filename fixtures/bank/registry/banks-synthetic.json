@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1",
+  "id": "banks-synthetic",
+  "version": "2026-09-04",
+  "kind": "bank-directory",
+  "sha256": "ab0eb10a2d56a953a83dc54dd0c0567e0e3e16c8a1f9f3bd8db1ac99bb26a45a",
+  "source": {
+    "publisher": "PayoutJP test fixtures",
+    "uri": "https://example.invalid/payoutjp/banks-synthetic",
+    "retrievedAt": "2026-09-04",
+    "license": "CC0-1.0",
+    "notes": ["Entirely fictional data for automated tests; not a list of real institutions."]
+  },
+  "payload": {
+    "kind": "bank-directory",
+    "banks": [
+      {
+        "code": "1234",
+        "name": "Sample Bank Alpha",
+        "status": "active",
+        "branches": [
+          { "code": "001", "name": "Main Fixture Branch", "status": "active" },
+          { "code": "002", "name": "Closed Fixture Branch", "status": "closed" }
+        ]
+      },
+      {
+        "code": "5678",
+        "name": "Sample Bank Beta",
+        "status": "unknown",
+        "branches": [
+          { "code": "003", "name": "Other Fixture Branch", "status": "active" },
+          { "code": "101", "name": "Unknown Fixture Branch", "status": "unknown" }
+        ]
+      }
+    ]
+  }
+}

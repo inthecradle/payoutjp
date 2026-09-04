@@ -26,7 +26,14 @@ importers:
 
   packages/action: {}
 
-  packages/bank: {}
+  packages/bank:
+    dependencies:
+      '@payoutjp/core':
+        specifier: workspace:*
+        version: link:../core
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
   packages/cli: {}
 

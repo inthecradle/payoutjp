@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1",
+  "id": "bank-synthetic-test",
+  "version": "0.1.0",
+  "status": "verified",
+  "rail": "bank_transfer",
+  "title": "Synthetic Bank integration test",
+  "description": "Fixture-only Profile covering Registry, character-set, and byte-length mechanisms.",
+  "rules": [
+    { "id": "BANK-CODE-001", "enabled": true, "params": { "asciiDigits": 4 } },
+    { "id": "BANK-CODE-002", "enabled": true, "params": {} },
+    { "id": "BANK-BRANCH-001", "enabled": true, "params": { "asciiDigits": 3 } },
+    { "id": "BANK-BRANCH-002", "enabled": true, "params": {} },
+    { "id": "BANK-BRANCH-003", "enabled": true, "params": {} },
+    {
+      "id": "BANK-TYPE-001",
+      "enabled": true,
+      "params": { "allowedValues": ["ordinary", "checking"] }
+    },
+    { "id": "BANK-NUMBER-001", "enabled": true, "params": { "asciiDigitsOnly": true } },
+    {
+      "id": "BANK-NUMBER-002",
+      "enabled": true,
+      "params": { "minDigits": 1, "maxDigits": 7 }
+    },
+    { "id": "BANK-HOLDER-001", "enabled": true, "params": { "required": true } },
+    { "id": "BANK-HOLDER-002", "enabled": true, "params": {} },
+    {
+      "id": "BANK-HOLDER-003",
+      "enabled": true,
+      "params": { "rejectControlCharacters": true }
+    },
+    {
+      "id": "BANK-HOLDER-004",
+      "enabled": true,
+      "params": { "unicodeNormalization": "NFC" }
+    },
+    {
+      "id": "BANK-HOLDER-005",
+      "enabled": true,
+      "params": { "allowedCharacters": "カ）サンプル" }
+    },
+    {
+      "id": "BANK-HOLDER-006",
+      "enabled": true,
+      "params": { "encoding": "utf8", "maxBytes": 30 }
+    }
+  ],
+  "registries": [
+    {
+      "id": "banks-synthetic",
+      "version": "2026-09-04",
+      "sha256": "ab0eb10a2d56a953a83dc54dd0c0567e0e3e16c8a1f9f3bd8db1ac99bb26a45a"
+    }
+  ],
+  "sourceNotes": [
+    "Fixture-only Profile; it makes no claim about a real bank or provider specification."
+  ]
+}

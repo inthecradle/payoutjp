@@ -96,6 +96,11 @@ Minimum cases:
 
 No test should assert that a synthetic bank/branch exists in reality.
 
+The authorized M2 suite covers all non-experimental rows applicable to `BANK-HOLDER-006` with the
+fixture-only Profile. The experimental row and `BANK-HOLDER-007` remain deferred with their held
+implementation scope. Validation tests install a `fetch` spy and assert that the Bank validation
+path performs no outbound request.
+
 ## 6. JPYC tests
 
 Official current Registry cases:

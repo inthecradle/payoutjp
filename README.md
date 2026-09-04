@@ -3,8 +3,8 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: early development. The M0 workspace bootstrap is complete. Validation rules and CLI
-> commands have not been implemented; the JPYC, scanner, and action packages remain placeholders.
+> Status: early development. The M0 workspace, M1 Core engine, and authorized M2 Bank subset are
+> implemented. The CLI, JPYC, scanner, and action packages remain placeholders.
 
 ## Design goals
 
@@ -37,11 +37,12 @@ packages/
   action/
 ```
 
-Every package currently exports a placeholder version and has an independent build and smoke test.
+`@payoutjp/core` provides the deterministic validation contracts and engine. `@payoutjp/bank`
+provides the Bank destination schema, conservative rules, the verified-safe `bank-generic-jp`
+Profile, and an injected Bank Directory contract. The other packages retain bootstrap exports.
 
-The next implementation slice will be deliberately narrow and selected from user evidence. The
-broader Bank, JPYC, Scanner, and GitHub Action documents describe candidate target-state behavior,
-not committed release scope.
+Production bank data, provider-specific Bank rules, experimental Zengin/Yucho Profiles, JPYC,
+Scanner, and GitHub Action behavior are not part of the implemented Bank subset.
 
 ## Development
 

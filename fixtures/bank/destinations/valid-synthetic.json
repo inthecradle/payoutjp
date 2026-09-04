@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1",
+  "rail": "bank_transfer",
+  "id": "recipient-synthetic-001",
+  "bankCode": "1234",
+  "branchCode": "001",
+  "accountType": "ordinary",
+  "accountNumber": "0123456",
+  "accountHolder": "カ）サンプル"
+}
