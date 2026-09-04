@@ -1,7 +1,17 @@
 {
   "name": "payoutjp-workspace",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.1",
   "private": true,
+  "description": "Local-first compatibility validation for Japanese payout destinations",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inthecradle/payoutjp.git"
+  },
+  "homepage": "https://github.com/inthecradle/payoutjp#readme",
+  "bugs": {
+    "url": "https://github.com/inthecradle/payoutjp/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=24 <25"
@@ -15,7 +25,10 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test"
+    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test",
+    "audit:prod": "pnpm audit --prod",
+    "test:consumer": "node scripts/test-packed-packages.mjs",
+    "release:check": "pnpm verify && pnpm audit:prod && pnpm test:consumer"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.12",

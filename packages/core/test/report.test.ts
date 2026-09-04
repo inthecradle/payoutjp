@@ -28,6 +28,7 @@ const finding = {
 const validReport = {
   schemaVersion: "1",
   tool: { name: "payoutjp", version: "0.0.0" },
+  notices: [],
   status: "WARNING",
   profiles: [{ id: "bank-generic-jp", version: "0.1.0", status: "verified" }],
   registries: [{ id: "synthetic-bank-directory", version: "1", sha256: registryDigest }],

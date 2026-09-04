@@ -157,14 +157,15 @@ Experimental Profile output additionally states:
 
 ## 13. Security reporting
 
-Before public release, add a `SECURITY.md` with:
+The public repository includes `SECURITY.md` with:
 
 - supported versions;
 - private reporting channel;
 - expected response policy;
 - explicit statement not to submit real bank account data in public issues.
 
-This file is not generated automatically until contact details are decided.
+GitHub private vulnerability reporting is the primary channel. The maintainer must confirm that the
+repository setting is enabled before creating the release.
 
 ## 14. Pre-release review checklist
 

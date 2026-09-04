@@ -76,6 +76,7 @@ describe("ValidationReportV1 aggregation invariants", () => {
   const report = {
     schemaVersion: "1" as const,
     tool: { name: "payoutjp" as const, version: "0.0.0" },
+    notices: [],
     status: "WARNING" as const,
     profiles: [],
     registries: [],

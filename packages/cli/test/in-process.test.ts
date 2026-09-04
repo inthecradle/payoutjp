@@ -106,7 +106,7 @@ describe("runCli in-process coverage", () => {
     ]);
 
     expect(help).toMatchObject({ exitCode: 0, stderr: "" });
-    expect(version.stdout).toBe("0.0.0\n");
+    expect(version.stdout).toBe("0.1.0-alpha.1\n");
     expect(written).toMatchObject({ exitCode: 0, stdout: "", stderr: "" });
     expect(JSON.parse(await readFile(output, "utf8"))).toMatchObject({ status: "WARNING" });
   });

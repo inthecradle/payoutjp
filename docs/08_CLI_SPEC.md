@@ -204,6 +204,8 @@ Profiles: <id@version>[, ...]
 Registries: <id@version>[, ...]
 Items: N  Passed: N  Warnings: N  Failed: N
 
+Notice: <safety boundary>
+
 <findings grouped by item>
 ```
 
@@ -227,6 +229,8 @@ The implemented `validate` JSON output exactly matches `ValidationReportV1`. Can
 - no timestamp
 - normalized `/` path separators
 - newline at EOF
+- deterministic `notices` containing the safety boundary and, when applicable, the experimental
+  Profile warning
 
 ## 8. Exit codes
 

@@ -5,6 +5,7 @@ import { Command, CommanderError, Option } from "commander";
 import { z } from "zod";
 import { failOnThresholdValues, resolveCliConfig } from "./config.js";
 import { exitCodeForReport } from "./exit-code.js";
+import { baseSafetyNotice } from "./notices.js";
 import { renderJsonReport } from "./renderers/json.js";
 import { renderTextReport } from "./renderers/text.js";
 import { runValidateCommand } from "./validate-command.js";
@@ -74,6 +75,7 @@ function createCliProgram(stdout: WritableTarget, stderr: WritableTarget): Comma
     .option("--profile <id[@version]>", "select a compatibility Profile")
     .option("--experimental", "permit an experimental Profile", false)
     .option("--quiet", "suppress non-report informational output", false)
+    .addHelpText("after", `\nSafety: ${baseSafetyNotice}\n`)
     .configureOutput({
       writeOut: (value) => stdout.write(value),
       writeErr: (value) => stderr.write(value),

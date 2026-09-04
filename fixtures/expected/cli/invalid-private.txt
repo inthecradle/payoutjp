@@ -1,8 +1,10 @@
 PayoutJP: FAIL
-Tool: payoutjp@0.0.0
+Tool: payoutjp@0.1.0-alpha.1
 Profiles: bank-generic-jp@0.1.0
 Registries: (none)
 Items: 1  Passed: 0  Warnings: 0  Failed: 1
+
+Notice: PayoutJP checks local data and configuration against the selected Profile and Registry. It does not verify account existence, recipient identity, wallet ownership, or payment success.
 
 Item: recipient-private-fixture (FAIL)
 ERROR BANK-NUMBER-001 destination.accountNumber

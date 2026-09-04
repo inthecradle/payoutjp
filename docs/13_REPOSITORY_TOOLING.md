@@ -184,6 +184,10 @@ Required:
 
 Exact commands may differ by selected tool version, but the named capabilities and one-command `verify` gate are mandatory.
 
+For the free OSS alpha, root scripts also expose `audit:prod`, `test:consumer`, and `release:check`.
+The latter runs the normal verify gate, production dependency audit, and packed-package consumer
+verification and never publishes. CI runs this complete release-readiness gate.
+
 ## 7. Package scripts
 
 Each package should expose at least:
@@ -195,6 +199,7 @@ Each package should expose at least:
 - `clean`
 
 CLI additionally exposes a development command if useful. Action exposes `bundle` and `check-bundle`.
+Publishable packages expose `prepack` so ignored `dist` output is rebuilt before a tarball is created.
 
 ## 8. Public API policy
 

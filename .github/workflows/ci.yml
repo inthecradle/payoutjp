@@ -26,5 +26,5 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Verify
-        run: pnpm verify
+      - name: Verify release readiness
+        run: pnpm release:check

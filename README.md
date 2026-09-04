@@ -3,9 +3,9 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: early development. The M0 workspace, M1 Core engine, M2 Bank subset, M3 JPYC
-> validation, and authorized M4 Bank CLI subset are implemented. Scanner and Action remain
-> placeholders.
+> Status: `0.1.0-alpha.1` release preparation. Core, the conservative Bank subset, and the
+> single-destination Bank CLI are the first npm release scope. JPYC is implemented as an unpublished
+> library preview. Scanner and Action remain placeholders. No npm package has been published yet.
 
 ## Design goals
 
@@ -52,6 +52,35 @@ and GitHub Action behavior remain outside the implemented scope.
 The current CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
 select a Profile explicitly:
 
+After the alpha is published:
+
+```sh
+npm install --global @payoutjp/cli@alpha
+payoutjp --version
+```
+
+Create `destination.json` using fictional data first:
+
+```json
+{
+  "schemaVersion": "1",
+  "rail": "bank_transfer",
+  "bankCode": "1234",
+  "branchCode": "001",
+  "accountType": "ordinary",
+  "accountNumber": "0123456",
+  "accountHolder": "SYNTHETIC"
+}
+```
+
+Then run:
+
+```sh
+payoutjp validate destination.json --profile bank-generic-jp@0.1.0
+```
+
+From a source checkout, build first and use the equivalent command:
+
 ```sh
 node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthetic.json \
   --profile bank-generic-jp@0.1.0
@@ -61,6 +90,16 @@ Use `--format json`, `--output <path>`, and `--fail-on <error|warning|never>` fo
 `--config` or `./payoutjp.config.yml` may provide `failOn` and local JSON Profile/Registry paths;
 relative paths resolve from the config file. YAML/CSV input, batch audit, profile/registry discovery,
 JPYC CLI validation, Scanner, and dedicated Action behavior are not included in this M4 subset.
+
+PayoutJP checks local data and configuration against the selected Profile and Registry. It does not
+verify account existence, recipient identity, wallet ownership, or payment success. No production
+Bank Registry is bundled; `bank-generic-jp` performs conservative structural checks only.
+
+## Library packages
+
+The first alpha prepares `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`. The workspace root,
+`@payoutjp/jpyc`, `@payoutjp/scanner`, and `@payoutjp/action` remain private npm packages. Source code
+in this repository is covered by the repository license even when its package is not published.
 
 ## Development
 
@@ -73,10 +112,18 @@ Requirements:
 corepack enable pnpm
 pnpm install --frozen-lockfile
 pnpm verify
+pnpm release:check
 ```
 
 `pnpm verify` runs formatting checks, linting, strict TypeScript checks, smoke tests, and builds for
 all workspace packages.
+
+`pnpm release:check` also audits production dependencies, packs the three public packages, installs
+them into a temporary clean consumer, checks their manifests and licenses, imports their public APIs,
+and executes the packaged CLI. It never publishes, tags, or retains artifacts.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md),
+[CHANGELOG.md](./CHANGELOG.md), and [RELEASING.md](./RELEASING.md) for project and release policy.
 
 ## Technical documentation
 
@@ -100,5 +147,6 @@ and released package versions are authoritative for current availability.
 
 ## License
 
-A public-use license has not been selected yet. No permission to use, copy, modify, or distribute
-this software is granted until a license file is added.
+Licensed under the [Apache License 2.0](./LICENSE). The license does not grant rights to project
+trademarks. Third-party Registry data and future separately distributed assets may have their own
+terms.

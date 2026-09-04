@@ -234,6 +234,15 @@ Coverage does not replace fixture quality.
 - action bundle freshness
 - no-network test mode
 
+### Free OSS alpha
+
+- locally pack `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`;
+- reject private metadata, missing license/README, and leaked `workspace:` dependencies;
+- install the tarballs together into a clean temporary consumer;
+- import public Core/Bank APIs and execute the packaged CLI;
+- pin external dependency overrides in the temporary consumer; installation may use the npm Registry,
+  while validation execution remains no-network.
+
 ## 14. Network guard
 
 At least one test layer must fail any attempted outbound network access by validation packages. Options include process policy, mocked global fetch, or dependency scanning. The implementation choice must be documented.

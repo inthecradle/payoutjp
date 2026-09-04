@@ -5,6 +5,7 @@ packages/*/.cache/
 coverage/
 *.tsbuildinfo
 *.log
+*.tgz
 .DS_Store
 .claude/settings.local.json
 

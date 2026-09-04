@@ -118,6 +118,7 @@ export const ValidationReportV1Schema = z
   .strictObject({
     schemaVersion: z.literal("1"),
     tool: ToolReferenceV1Schema,
+    notices: z.array(NonEmptyStringSchema),
     status: z.enum(itemStatusValues),
     profiles: ProfileReferencesSchema,
     registries: RegistryReferencesSchema,
@@ -172,6 +173,7 @@ export interface ValidationItemInputV1 {
 /** Inputs whose ordering and aggregate fields are normalized by the report builder. */
 export interface CreateValidationReportV1Input {
   readonly tool: ToolReferenceV1;
+  readonly notices?: readonly string[];
   readonly profiles: readonly ProfileReferenceV1[];
   readonly registries: readonly RegistryReferenceV1[];
   readonly items: readonly ValidationItemInputV1[];
@@ -221,6 +223,7 @@ export function createValidationReportV1(input: CreateValidationReportV1Input): 
   return ValidationReportV1Schema.parse({
     schemaVersion: "1",
     tool: input.tool,
+    notices: [...(input.notices ?? [])],
     status: aggregateReportStatus(itemStatuses),
     profiles: sortProfileReferences(input.profiles),
     registries: sortRegistryReferences(input.registries),

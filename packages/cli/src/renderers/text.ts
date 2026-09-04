@@ -24,6 +24,10 @@ export function renderTextReport(report: ValidationReportV1): string {
     `Items: ${report.summary.totalItems}  Passed: ${report.summary.passedItems}  Warnings: ${report.summary.warningItems}  Failed: ${report.summary.failedItems}`,
   ];
 
+  if (report.notices.length > 0) {
+    lines.push("", ...report.notices.map((notice) => `Notice: ${notice}`));
+  }
+
   for (const item of report.items) {
     if (item.findings.length === 0) {
       continue;

@@ -346,6 +346,7 @@ export interface ProfileReferenceV1 {
 export interface ValidationReportV1 {
   schemaVersion: "1";
   tool: ToolReferenceV1;
+  notices: string[];
   status: ItemStatus;
   profiles: ProfileReferenceV1[];
   registries: RegistryReferenceV1[];
@@ -355,6 +356,8 @@ export interface ValidationReportV1 {
 ```
 
 Canonical report omits runtime timestamp and absolute paths to preserve deterministic comparison.
+`notices` contains deterministic, non-sensitive safety or experimental-profile statements and is
+part of the machine-readable output contract.
 
 ## 12. Rule interface
 

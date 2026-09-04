@@ -2,8 +2,11 @@
   "schemaVersion": "1",
   "tool": {
     "name": "payoutjp",
-    "version": "0.0.0"
+    "version": "0.1.0-alpha.1"
   },
+  "notices": [
+    "PayoutJP checks local data and configuration against the selected Profile and Registry. It does not verify account existence, recipient identity, wallet ownership, or payment success."
+  ],
   "status": "PASS",
   "profiles": [
     {

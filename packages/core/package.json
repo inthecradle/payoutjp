@@ -1,7 +1,17 @@
 {
   "name": "@payoutjp/core",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0-alpha.1",
+  "description": "Deterministic validation contracts, engine, and redaction primitives for PayoutJP",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inthecradle/payoutjp.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/inthecradle/payoutjp#readme",
+  "bugs": {
+    "url": "https://github.com/inthecradle/payoutjp/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=24 <25"
@@ -13,14 +23,20 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "clean": "tsc -b tsconfig.build.json --clean"
+    "clean": "tsc -b tsconfig.build.json --clean",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "zod": "^4.5.4"

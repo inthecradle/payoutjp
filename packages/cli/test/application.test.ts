@@ -32,7 +32,7 @@ describe("payoutjp CLI", () => {
   it("prints the version without diagnostics", () => {
     const result = runCli(["--version"]);
     expect(result.status).toBe(0);
-    expect(result.stdout).toBe("0.0.0\n");
+    expect(result.stdout).toBe("0.1.0-alpha.1\n");
     expect(result.stderr).toBe("");
   });
 
@@ -40,6 +40,7 @@ describe("payoutjp CLI", () => {
     const result = runCli(["--help"]);
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("validate");
+    expect(result.stdout).toContain("does not verify account existence");
     expect(result.stdout).not.toMatch(/\b(audit|scan|profiles|registry)\b/u);
     expect(result.stderr).toBe("");
   });
@@ -68,6 +69,9 @@ describe("payoutjp CLI", () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toBe(golden("valid-synthetic.json"));
     expect(() => JSON.parse(result.stdout)).not.toThrow();
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      notices: [expect.stringContaining("does not verify account existence")],
+    });
     expect(result.stdout.endsWith("\n")).toBe(true);
     expect(result.stderr).toBe("");
   });
@@ -156,6 +160,7 @@ describe("payoutjp CLI", () => {
     expect(denied.stderr).toContain("PJP_PROFILE_STATUS_NOT_ALLOWED");
     expect(allowed.status).toBe(0);
     expect(allowed.stdout).toContain("Profiles: bank-experimental-fixture@0.1.0");
+    expect(allowed.stdout).toContain("This Profile is experimental");
   });
 
   it("separates safe usage/config diagnostics from stdout", () => {

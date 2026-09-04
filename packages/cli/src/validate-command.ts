@@ -10,6 +10,7 @@ import { z } from "zod";
 import { resolveBankProfile, resolveBankRegistries } from "./artifacts.js";
 import type { ResolvedCliConfig } from "./config.js";
 import { loadJsonInput } from "./loaders/json.js";
+import { baseSafetyNotice, experimentalProfileNotice } from "./notices.js";
 import { version } from "./version.js";
 
 const SingleValidationRequestV1Schema = z.strictObject({
@@ -74,6 +75,10 @@ export async function runValidateCommand(
 
   return createValidationReportV1({
     tool: { name: "payoutjp", version },
+    notices:
+      profile.status === "experimental"
+        ? [baseSafetyNotice, experimentalProfileNotice]
+        : [baseSafetyNotice],
     profiles: [{ id: profile.id, version: profile.version, status: profile.status }],
     registries: profile.registries,
     items: [

@@ -117,6 +117,14 @@ Potential artifacts:
 
 MVP may produce local tarballs with `pnpm pack` instead of publishing.
 
+### First free OSS alpha
+
+`0.1.0-alpha.1` prepares `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli` only. The workspace
+root and JPYC/Scanner/Action packages remain private. `pnpm release:check` builds and packs all three
+public packages, rejects missing licenses and leaked `workspace:` dependency specifications, installs
+them together in a clean temporary consumer, imports public APIs, and executes the packaged CLI.
+Publishing and tagging remain explicit maintainer operations documented in `RELEASING.md`.
+
 ## 12. RC checklist
 
 - [ ] `pnpm verify` passes from clean clone.
