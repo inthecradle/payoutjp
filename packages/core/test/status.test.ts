@@ -1,9 +1,12 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   isItemStatus,
+  isProfileStatus,
   isSeverity,
   type ItemStatus,
   itemStatusValues,
+  type ProfileStatus,
+  profileStatusValues,
   type Severity,
   severityValues,
 } from "../src/index.js";
@@ -21,12 +24,24 @@ describe("common severity and status model", () => {
     expectTypeOf<ItemStatus>().toEqualTypeOf<"PASS" | "WARNING" | "FAIL">();
   });
 
+  it("exposes the canonical profile status values", () => {
+    expect(profileStatusValues).toEqual(["verified", "experimental", "deprecated", "retired"]);
+    expect(Object.isFrozen(profileStatusValues)).toBe(true);
+    expectTypeOf<ProfileStatus>().toEqualTypeOf<
+      "verified" | "experimental" | "deprecated" | "retired"
+    >();
+  });
+
   it.each(severityValues)("accepts severity %s", (value) => {
     expect(isSeverity(value)).toBe(true);
   });
 
   it.each(itemStatusValues)("accepts item status %s", (value) => {
     expect(isItemStatus(value)).toBe(true);
+  });
+
+  it.each(profileStatusValues)("accepts profile status %s", (value) => {
+    expect(isProfileStatus(value)).toBe(true);
   });
 
   it.each(["ERROR", "warn", "", null, undefined, 1, {}, []])(
@@ -40,6 +55,13 @@ describe("common severity and status model", () => {
     "rejects non-status value %j",
     (value) => {
       expect(isItemStatus(value)).toBe(false);
+    },
+  );
+
+  it.each(["active", "EXPERIMENTAL", "", null, undefined, 1, {}, []])(
+    "rejects non-profile-status value %j",
+    (value) => {
+      expect(isProfileStatus(value)).toBe(false);
     },
   );
 

@@ -1,24 +1,6 @@
 import { z } from "zod";
-import { createProfileId, createRuleId, type ProfileId, type RuleId } from "./identifiers.js";
+import { ProfileIdSchema, RuleIdSchema } from "./identifier-schema.js";
 import { severityValues } from "./status.js";
-
-function parseRuleId(value: string, context: z.RefinementCtx): RuleId {
-  try {
-    return createRuleId(value);
-  } catch {
-    context.addIssue({ code: "custom", message: "Invalid RuleId" });
-    return z.NEVER;
-  }
-}
-
-function parseProfileId(value: string, context: z.RefinementCtx): ProfileId {
-  try {
-    return createProfileId(value);
-  } catch {
-    context.addIssue({ code: "custom", message: "Invalid ProfileId" });
-    return z.NEVER;
-  }
-}
 
 function isNormalizedRelativePath(value: string): boolean {
   if (value.length === 0 || value.startsWith("/") || value.includes("\\")) {
@@ -32,8 +14,6 @@ function isNormalizedRelativePath(value: string): boolean {
   return value.split("/").every((segment) => segment !== "" && segment !== "." && segment !== "..");
 }
 
-const RuleIdSchema = z.string().transform(parseRuleId);
-const ProfileIdSchema = z.string().transform(parseProfileId);
 const NormalizedRelativePathSchema = z
   .string()
   .refine(isNormalizedRelativePath, "Expected a normalized relative path");

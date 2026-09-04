@@ -10,6 +10,17 @@ export const itemStatusValues = Object.freeze(["PASS", "WARNING", "FAIL"] as con
 /** Aggregated status shared by validation items and reports. */
 export type ItemStatus = (typeof itemStatusValues)[number];
 
+/** Canonical lifecycle statuses for compatibility profiles. */
+export const profileStatusValues = Object.freeze([
+  "verified",
+  "experimental",
+  "deprecated",
+  "retired",
+] as const);
+
+/** Lifecycle status of a compatibility profile. */
+export type ProfileStatus = (typeof profileStatusValues)[number];
+
 function isStringMember<Values extends readonly string[]>(
   values: Values,
   value: unknown,
@@ -25,4 +36,9 @@ export function isSeverity(value: unknown): value is Severity {
 /** Returns whether an unknown value is a canonical validation item/report status. */
 export function isItemStatus(value: unknown): value is ItemStatus {
   return isStringMember(itemStatusValues, value);
+}
+
+/** Returns whether an unknown value is a canonical compatibility profile status. */
+export function isProfileStatus(value: unknown): value is ProfileStatus {
+  return isStringMember(profileStatusValues, value);
 }
