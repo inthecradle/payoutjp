@@ -1,23 +1,23 @@
 import type { FindingV1 } from "./finding.js";
 import type { ItemId, RuleId } from "./identifiers.js";
+import type { CompatibilityProfileV1 } from "./profile.js";
 import type { Severity } from "./status.js";
 
 /**
  * Immutable input shared with a rule during applicability checks and evaluation.
  *
- * Profile and Registry values remain generic until their runtime contracts are
- * introduced by PJP-106 and PJP-107.
+ * Registry values remain generic until their runtime contract is introduced by
+ * PJP-107.
  */
 export interface RuleContextV1<
   TDestination = unknown,
   TParams = unknown,
-  TProfile = unknown,
   TRegistry = unknown,
   TApplicationConfig = unknown,
 > {
   readonly destination: TDestination;
   readonly applicationConfig?: TApplicationConfig;
-  readonly profile: TProfile;
+  readonly profile: CompatibilityProfileV1;
   readonly params: TParams;
   readonly registries: ReadonlyMap<string, TRegistry>;
   readonly itemIndex: number;

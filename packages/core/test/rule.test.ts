@@ -1,5 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import {
+  type CompatibilityProfileV1,
+  CompatibilityProfileV1Schema,
   createItemId,
   createRuleId,
   type FindingV1,
@@ -15,15 +17,23 @@ interface TestParams {
   readonly minimumLength: number;
 }
 
-interface TestProfile {
-  readonly version: string;
-}
-
 interface TestRegistry {
   readonly digest: string;
 }
 
-type TestContext = RuleContextV1<TestDestination, TestParams, TestProfile, TestRegistry>;
+type TestContext = RuleContextV1<TestDestination, TestParams, TestRegistry>;
+
+const profile = CompatibilityProfileV1Schema.parse({
+  schemaVersion: "1",
+  id: "test-profile",
+  version: "1.0.0",
+  status: "verified",
+  rail: "bank_transfer",
+  title: "Test Profile",
+  description: "Profile fixture for the generic Rule contract.",
+  rules: [],
+  registries: [],
+});
 
 const minimumLengthRule = {
   id: createRuleId("TEST-LENGTH-001"),
@@ -50,7 +60,7 @@ const minimumLengthRule = {
 
 const context: TestContext = {
   destination: { value: "1234" },
-  profile: { version: "1.0.0" },
+  profile,
   params: { minimumLength: 4 },
   registries: new Map([["directory", { digest: "abc123" }]]),
   itemIndex: 0,
@@ -75,11 +85,11 @@ describe("Rule", () => {
     expectTypeOf<ReturnType<Rule<TestContext>["evaluate"]>>().toEqualTypeOf<readonly FindingV1[]>();
   });
 
-  it("keeps Profile and Registry values generic for their dedicated contracts", () => {
-    expect(context.profile).toEqual({ version: "1.0.0" });
+  it("uses the Profile contract while keeping Registry values generic", () => {
+    expect(context.profile).toBe(profile);
     expect(context.registries.get("directory")).toEqual({ digest: "abc123" });
 
-    expectTypeOf(context.profile).toEqualTypeOf<TestProfile>();
+    expectTypeOf(context.profile).toEqualTypeOf<CompatibilityProfileV1>();
     expectTypeOf(context.registries).toEqualTypeOf<ReadonlyMap<string, TestRegistry>>();
   });
 });

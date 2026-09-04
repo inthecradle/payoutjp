@@ -25,6 +25,16 @@ export {
 } from "./identifiers.js";
 
 export {
+  type CompatibilityProfileV1,
+  CompatibilityProfileV1Schema,
+  type LoadCompatibilityProfileV1Options,
+  loadCompatibilityProfileV1,
+  type ProfileRuleParameterParser,
+  type RuleConfigurationV1,
+  RuleConfigurationV1Schema,
+} from "./profile.js";
+
+export {
   type ProfileReferenceV1,
   ProfileReferenceV1Schema,
   type Rail,
