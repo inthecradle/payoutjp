@@ -4,6 +4,7 @@ import {
   type CompatibilityProfileV1,
   CompatibilityProfileV1Schema,
   loadCompatibilityProfileV1,
+  PayoutJpConfigurationError,
   type ProfileId,
   type RegistryId,
   type RuleConfigurationV1,
@@ -157,6 +158,12 @@ describe("loadCompatibilityProfileV1", () => {
     expect(load(validProfile)).toEqual(validProfile);
   });
 
+  it("maps structural schema failures to a stable configuration error", () => {
+    expect(() => load({ ...validProfile, title: "" })).toThrow(
+      new PayoutJpConfigurationError("PJP_PROFILE_INVALID"),
+    );
+  });
+
   it("allows deprecated Profiles for reproducible past runs", () => {
     expect(load({ ...validProfile, status: "deprecated" }).status).toBe("deprecated");
   });
@@ -166,25 +173,25 @@ describe("loadCompatibilityProfileV1", () => {
     const retired = { ...validProfile, status: "retired" };
 
     expect(() => load(experimental)).toThrow(
-      new TypeError("Experimental Profiles must be explicitly enabled"),
+      new PayoutJpConfigurationError("PJP_PROFILE_STATUS_NOT_ALLOWED"),
     );
     expect(load(experimental, { allowExperimental: true }).status).toBe("experimental");
     expect(() => load(retired)).toThrow(
-      new TypeError("Retired Profiles must be explicitly enabled"),
+      new PayoutJpConfigurationError("PJP_PROFILE_STATUS_NOT_ALLOWED"),
     );
     expect(load(retired, { allowRetired: true }).status).toBe("retired");
   });
 
   it("rejects unknown Profile rule IDs", () => {
     expect(() => loadCompatibilityProfileV1(validProfile, { rules: [] })).toThrow(
-      new TypeError("Profile references an unknown RuleId"),
+      new PayoutJpConfigurationError("PJP_RULE_UNKNOWN"),
     );
   });
 
   it("rejects duplicate registered rule IDs", () => {
     expect(() =>
       loadCompatibilityProfileV1(validProfile, { rules: [bankCodeRule, bankCodeRule] }),
-    ).toThrow(new TypeError("Duplicate registered RuleId"));
+    ).toThrow(new PayoutJpConfigurationError("PJP_RULE_DUPLICATE"));
   });
 
   it("rejects invalid and unknown rule params without leaking their values", () => {
@@ -203,8 +210,9 @@ describe("loadCompatibilityProfileV1", () => {
       load(profile);
       expect.unreachable("invalid params must fail Profile loading");
     } catch (error) {
-      expect(error).toBeInstanceOf(TypeError);
-      expect((error as Error).message).toBe("Invalid params for Profile rule");
+      expect(error).toBeInstanceOf(PayoutJpConfigurationError);
+      expect((error as PayoutJpConfigurationError).code).toBe("PJP_RULE_PARAMS_INVALID");
+      expect((error as Error).message).toBe("Invalid params for Compatibility Profile rule");
       expect((error as Error).message).not.toContain(sensitiveValue);
     }
   });

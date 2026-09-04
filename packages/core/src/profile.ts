@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PayoutJpConfigurationError } from "./errors.js";
 import { ProfileIdSchema, RuleIdSchema } from "./identifier-schema.js";
 import { railValues, RegistryReferenceV1Schema } from "./report.js";
 import { profileStatusValues, severityValues } from "./status.js";
@@ -80,7 +81,7 @@ function indexRuleParsers(
 
   for (const rule of rules) {
     if (parsers.has(rule.id)) {
-      throw new TypeError("Duplicate registered RuleId");
+      throw new PayoutJpConfigurationError("PJP_RULE_DUPLICATE");
     }
     parsers.set(rule.id, rule);
   }
@@ -98,13 +99,17 @@ export function loadCompatibilityProfileV1(
   input: unknown,
   options: LoadCompatibilityProfileV1Options,
 ): CompatibilityProfileV1 {
-  const profile = CompatibilityProfileV1Schema.parse(input);
+  const parsed = CompatibilityProfileV1Schema.safeParse(input);
+  if (!parsed.success) {
+    throw new PayoutJpConfigurationError("PJP_PROFILE_INVALID");
+  }
+  const profile = parsed.data;
 
   if (profile.status === "experimental" && options.allowExperimental !== true) {
-    throw new TypeError("Experimental Profiles must be explicitly enabled");
+    throw new PayoutJpConfigurationError("PJP_PROFILE_STATUS_NOT_ALLOWED");
   }
   if (profile.status === "retired" && options.allowRetired !== true) {
-    throw new TypeError("Retired Profiles must be explicitly enabled");
+    throw new PayoutJpConfigurationError("PJP_PROFILE_STATUS_NOT_ALLOWED");
   }
 
   const parsers = indexRuleParsers(options.rules);
@@ -112,13 +117,13 @@ export function loadCompatibilityProfileV1(
   for (const configuration of profile.rules) {
     const rule = parsers.get(configuration.id);
     if (rule === undefined) {
-      throw new TypeError("Profile references an unknown RuleId");
+      throw new PayoutJpConfigurationError("PJP_RULE_UNKNOWN");
     }
 
     try {
       rule.parseParams(configuration.params);
     } catch {
-      throw new TypeError("Invalid params for Profile rule");
+      throw new PayoutJpConfigurationError("PJP_RULE_PARAMS_INVALID");
     }
   }
 

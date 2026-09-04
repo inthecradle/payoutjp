@@ -78,6 +78,7 @@ describe("FindingV1Schema", () => {
     ["fractional column", { column: 1.5 }],
     ["negative item index", { itemIndex: -1 }],
     ["absolute path", { file: "/tmp/recipient.json" }],
+    ["Windows absolute path", { file: "C:/customer/recipient.json" }],
     ["parent traversal", { file: "fixtures/../recipient.json" }],
     ["backslash path", { file: "fixtures\\recipient.json" }],
     ["invalid JSON Pointer", { jsonPointer: "destination/bankCode" }],

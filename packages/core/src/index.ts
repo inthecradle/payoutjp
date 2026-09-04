@@ -2,6 +2,28 @@
 export const version = "0.0.0";
 
 export {
+  aggregateItemStatus,
+  aggregateReportStatus,
+  summarizeValidationItems,
+} from "./aggregation.js";
+
+export { compareFindings, executeRules, sortFindings } from "./engine.js";
+
+export {
+  isPayoutJpError,
+  PayoutJpConfigurationError,
+  type PayoutJpConfigurationErrorCode,
+  PayoutJpError,
+  type PayoutJpErrorCode,
+  payoutJpErrorCodeValues,
+  type PayoutJpErrorExitCode,
+  PayoutJpInputError,
+  PayoutJpIntegrityError,
+  type PayoutJpIntegrityErrorCode,
+  PayoutJpInternalError,
+} from "./errors.js";
+
+export {
   type FindingLocationV1,
   FindingLocationV1Schema,
   type FindingV1,
@@ -35,6 +57,8 @@ export {
 } from "./profile.js";
 
 export {
+  type CreateValidationReportV1Input,
+  createValidationReportV1,
   type ProfileReferenceV1,
   ProfileReferenceV1Schema,
   type Rail,
@@ -43,13 +67,36 @@ export {
   RegistryReferenceV1Schema,
   type ToolReferenceV1,
   ToolReferenceV1Schema,
+  type ValidationItemInputV1,
   type ValidationItemReportV1,
   ValidationItemReportV1Schema,
   type ValidationReportV1,
   ValidationReportV1Schema,
   type ValidationSummaryV1,
   ValidationSummaryV1Schema,
+  sortProfileReferences,
+  sortRegistryReferences,
 } from "./report.js";
+
+export {
+  createMetadataObservedValue,
+  createPublicObservedValue,
+  maskBankAccountNumber,
+  redactAccountHolder,
+  shortenTokenContract,
+  shortenWalletAddress,
+} from "./redaction.js";
+
+export {
+  calculateRegistryEnvelopeSha256,
+  canonicalizeJson,
+  createRegistryEnvelopeV1Schema,
+  type RegistryEnvelopeV1,
+  RegistryEnvelopeV1Schema,
+  type SourceMetadataV1,
+  SourceMetadataV1Schema,
+  loadRegistryEnvelopeV1,
+} from "./registry.js";
 
 export type { Rule, RuleContextV1 } from "./rule.js";
 

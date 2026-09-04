@@ -3,8 +3,10 @@ import {
   type CompatibilityProfileV1,
   CompatibilityProfileV1Schema,
   createItemId,
+  createRegistryId,
   createRuleId,
   type FindingV1,
+  type RegistryEnvelopeV1,
   type Rule,
   type RuleContextV1,
 } from "../src/index.js";
@@ -35,6 +37,20 @@ const profile = CompatibilityProfileV1Schema.parse({
   registries: [],
 });
 
+const registry: RegistryEnvelopeV1<TestRegistry> = {
+  schemaVersion: "1",
+  id: createRegistryId("test-registry"),
+  version: "1.0.0",
+  kind: "test",
+  sha256: "a".repeat(64),
+  source: {
+    publisher: "PayoutJP tests",
+    uri: "urn:payoutjp:test:rule-registry",
+    retrievedAt: "2026-09-04",
+  },
+  payload: { digest: "abc123" },
+};
+
 const minimumLengthRule = {
   id: createRuleId("TEST-LENGTH-001"),
   defaultSeverity: "warning",
@@ -62,7 +78,7 @@ const context: TestContext = {
   destination: { value: "1234" },
   profile,
   params: { minimumLength: 4 },
-  registries: new Map([["directory", { digest: "abc123" }]]),
+  registries: new Map([["directory", registry]]),
   itemIndex: 0,
   itemId: createItemId("recipient-001"),
 };
@@ -87,9 +103,11 @@ describe("Rule", () => {
 
   it("uses the Profile contract while keeping Registry values generic", () => {
     expect(context.profile).toBe(profile);
-    expect(context.registries.get("directory")).toEqual({ digest: "abc123" });
+    expect(context.registries.get("directory")).toBe(registry);
 
     expectTypeOf(context.profile).toEqualTypeOf<CompatibilityProfileV1>();
-    expectTypeOf(context.registries).toEqualTypeOf<ReadonlyMap<string, TestRegistry>>();
+    expectTypeOf(context.registries).toEqualTypeOf<
+      ReadonlyMap<string, RegistryEnvelopeV1<TestRegistry>>
+    >();
   });
 });

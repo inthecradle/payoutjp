@@ -1,11 +1,15 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { z } from "zod";
 import {
+  createProfileId,
+  createRegistryId,
   type ItemId,
   type ProfileId,
   type RegistryId,
   type ValidationReportV1,
   ValidationReportV1Schema,
+  sortProfileReferences,
+  sortRegistryReferences,
 } from "../src/index.js";
 
 const registryDigest = "a".repeat(64);
@@ -169,17 +173,41 @@ describe("ValidationReportV1Schema", () => {
     expect(ValidationReportV1Schema.safeParse(input).success).toBe(false);
   });
 
-  it("leaves summary and status aggregation consistency to PJP-109", () => {
+  it("rejects summary and status values inconsistent with item findings", () => {
     const result = ValidationReportV1Schema.safeParse({
       ...validReport,
       status: "PASS",
       summary: { ...validReport.summary, totalItems: 99 },
     });
 
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("is the source of truth for the exported ValidationReportV1 type", () => {
     expectTypeOf<ValidationReportV1>().toEqualTypeOf<z.infer<typeof ValidationReportV1Schema>>();
+  });
+
+  it("sorts versioned references without mutating caller arrays", () => {
+    const profiles = [
+      { id: createProfileId("z-profile"), version: "1", status: "verified" as const },
+      { id: createProfileId("a-profile"), version: "2", status: "deprecated" as const },
+      { id: createProfileId("a-profile"), version: "1", status: "verified" as const },
+    ];
+    const registries = [
+      { id: createRegistryId("z-registry"), version: "1", sha256: "a".repeat(64) },
+      { id: createRegistryId("a-registry"), version: "2", sha256: "b".repeat(64) },
+      { id: createRegistryId("a-registry"), version: "1", sha256: "c".repeat(64) },
+    ];
+
+    expect(sortProfileReferences(profiles).map(({ id, version }) => `${id}@${version}`)).toEqual([
+      "a-profile@1",
+      "a-profile@2",
+      "z-profile@1",
+    ]);
+    expect(sortRegistryReferences(registries).map(({ id, version }) => `${id}@${version}`)).toEqual(
+      ["a-registry@1", "a-registry@2", "z-registry@1"],
+    );
+    expect(profiles[0]?.id).toBe("z-profile");
+    expect(registries[0]?.id).toBe("z-registry");
   });
 });
