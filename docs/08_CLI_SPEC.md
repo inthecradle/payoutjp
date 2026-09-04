@@ -2,6 +2,11 @@
 
 Binary name: `payoutjp`
 
+> **Implementation status:** The CLI package is currently a placeholder. The first implemented
+> command set will be limited to the selected validation workflow, text/JSON output, and the exit
+> code policy. `scan` and dedicated Action integration are deferred. Possible Registry diff or
+> impact commands have no approved flags or data contracts yet.
+
 ## 1. Global behavior
 
 ```text

@@ -2,6 +2,9 @@
 
 ## 1. Proposed repository tree
 
+M0 creates all six package boundaries below. The `jpyc`, `scanner`, and `action` packages remain
+buildable placeholders until their domain features are selected for implementation.
+
 ```text
 .
 ├── README.md
@@ -10,7 +13,7 @@
 ├── pnpm-workspace.yaml
 ├── tsconfig.base.json
 ├── biome.json
-├── vitest.config.ts
+├── vitest.workspace.ts
 ├── packages/
 │   ├── core/
 │   │   ├── package.json
@@ -236,10 +239,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/setup@v2
+      - uses: pnpm/action-setup@v4
         with:
-          runtime: node@24
-          install: false
+          version: 11.25.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
 ```
@@ -247,6 +253,9 @@ jobs:
 Maintainers must verify current action major versions when updating CI; the requirements are Node.js 24 and frozen dependency installation.
 
 ## 12. Generated action bundle
+
+This section applies only after the Action package is selected for implementation. The M0
+placeholder does not require a committed production bundle.
 
 CI procedure:
 

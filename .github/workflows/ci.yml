@@ -15,11 +15,15 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
-      - name: Set up pnpm and Node.js 24
-        uses: pnpm/setup@v2
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
         with:
-          runtime: node@24
-          install: false
+          version: 11.25.0
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Verify

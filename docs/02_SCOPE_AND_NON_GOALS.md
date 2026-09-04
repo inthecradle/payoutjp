@@ -1,6 +1,17 @@
 # 02 — Scope and Non-goals
 
-## 1. v0.1 scope
+## 1. Current implementation status
+
+- M0 provides buildable `core`, `bank`, `jpyc`, `scanner`, `cli`, and `action` package skeletons.
+- Strict TypeScript, Vitest, Biome, Node.js 24 CI, and `pnpm verify` are configured.
+- No domain validation behavior is implemented yet.
+- The first feature slice will be selected from user evidence and is expected to stay within
+  `core + bank + cli` unless that evidence supports a different boundary.
+- JPYC validation, the configuration scanner, and the dedicated GitHub Action are deferred.
+
+## 2. Candidate target-state scope
+
+The sections below describe possible release scope. They are not an availability guarantee.
 
 ### Bank destination validation
 
@@ -43,7 +54,7 @@
 - GitHub JavaScript Action
 - text and JSON report
 
-## 2. Explicit non-goals
+## 3. Explicit non-goals
 
 ### Money movement
 
@@ -88,24 +99,26 @@
 - 24/7 SLA
 - 法律・会計・銀行実務の保証
 
-## 3. Scope by phase
+## 4. Scope by phase
 
-| Capability | v0.1 | RC | Future |
+| Capability | Initial selected slice | Broader RC | Future |
 |---|---:|---:|---:|
-| TypeScript API | Yes | Yes | Yes |
+| TypeScript API | Selected subset | Yes | Yes |
 | CLI text/JSON | Yes | Yes | Yes |
-| Canonical CSV | Yes | Yes | Yes |
-| GitHub Action | Yes | Yes | Yes |
-| SARIF/JUnit | No | Yes | Yes |
-| Bank production Registry | Blocked | Required for launch | Yes |
-| JPYC current mainnet Registry | Yes | Yes | Yes |
-| Historical JPYC provenance Registry | Optional | Maybe | Yes |
+| Canonical CSV | If selected | Yes | Yes |
+| GitHub Action | No | If justified | Yes |
+| SARIF/JUnit | No | If justified | Yes |
+| Bank production Registry | BYO/synthetic only | Required if redistributed | Yes |
+| Registry change impact | If selected | Yes | Yes |
+| Provider compatibility test pack | If selected | Yes | Yes |
+| JPYC current mainnet Registry | No | If justified | Yes |
+| Historical JPYC provenance Registry | No | Maybe | Yes |
 | Signed rule packs | No | No | Maybe |
 | Web UI | No | No | Unapproved |
 | Hosted API | No | No | Unapproved |
 | Bank/JPYC execution | Never | Never | Never |
 
-## 4. Profile policy
+## 5. Profile policy
 
 - `verified`: source and semantics are sufficiently documented for normal use.
 - `experimental`: known limitations or source uncertainty exists. Must emit metadata in reports.
@@ -114,7 +127,7 @@
 
 `zengin-fb-draft` and `yucho-transfer-draft` begin as`experimental`. Exact bank/service behavior must not be generalized without evidence.
 
-## 5. Auto-fix policy
+## 6. Auto-fix policy
 
 v0.1は`--fix`を提供しない。
 
@@ -127,7 +140,7 @@ v0.1は`--fix`を提供しない。
 
 Findingは`suggestion`を持てるが、原入力を書き換えない。
 
-## 6. Change control
+## 7. Change control
 
 次を追加する場合、ADRが必要。
 

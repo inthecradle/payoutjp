@@ -3,8 +3,8 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: early development. The repository currently contains the M0 workspace bootstrap only;
-> validation rules, CLI commands, and the GitHub Action are not implemented yet.
+> Status: early development. The M0 workspace bootstrap is complete. Validation rules and CLI
+> commands have not been implemented; the JPYC, scanner, and action packages remain placeholders.
 
 ## Design goals
 
@@ -38,6 +38,10 @@ packages/
 ```
 
 Every package currently exports a placeholder version and has an independent build and smoke test.
+
+The next implementation slice will be deliberately narrow and selected from user evidence. The
+broader Bank, JPYC, Scanner, and GitHub Action documents describe candidate target-state behavior,
+not committed release scope.
 
 ## Development
 

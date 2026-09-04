@@ -1,5 +1,9 @@
 # 10 — GitHub Action Specification
 
+> **Implementation status: deferred.** CI use can first be validated by running the CLI in a normal
+> workflow step. A dedicated Action is useful only when Action-specific annotations, summaries, or
+> outputs are required.
+
 ## 1. Action type
 
 JavaScript Action bundled as pure JavaScript.

@@ -1,5 +1,8 @@
 # 09 — JPYC Configuration Scanner Specification
 
+> **Implementation status: deferred.** This is a target-state design and is not part of the first
+> expected `core + bank + cli` feature slice.
+
 ## 1. Goal
 
 Find likely JPYC route configuration mistakes in source/config files without executing code and without sending data outside the local process.

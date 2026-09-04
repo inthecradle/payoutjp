@@ -1,5 +1,9 @@
 # 06 — Initial Rule Catalog
 
+> **Implementation status:** These Bank, JPYC, and Scanner rule lists are candidate target-state
+> catalogs. None of the domain rules are implemented in the current M0 packages. Registry
+> change-impact rules also require a separately specified change taxonomy before IDs are assigned.
+
 ## 1. Rule policy
 
 - Rule IDs are immutable once released.

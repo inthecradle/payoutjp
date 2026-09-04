@@ -1,5 +1,14 @@
 # 04 — Architecture
 
+## 0. Implementation status
+
+This document describes a candidate target-state architecture. M0 creates all six package
+boundaries, but `jpyc`, `scanner`, and `action` remain buildable placeholders. The first feature
+slice is expected to use no more than `core + bank + cli`; a normal CI step can invoke the CLI
+without requiring a dedicated GitHub Action.
+
+Stable package boundaries let deferred modules be added later without coupling them into Core.
+
 ## 1. Architecture style
 
 - Local-first

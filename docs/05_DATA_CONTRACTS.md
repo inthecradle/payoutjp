@@ -1,5 +1,9 @@
 # 05 — Data Contracts
 
+> **Scope note:** These are candidate validation contracts. A cross-snapshot Registry change-impact
+> workflow is not specified here; its request shape, change taxonomy, join keys, stable IDs,
+> redaction policy, and report contract must be designed before implementation.
+
 This document defines the v0.1 canonical contracts. Runtime schemas are the source of truth; TypeScript types are inferred from them where possible.
 
 ## 1. Common enums
