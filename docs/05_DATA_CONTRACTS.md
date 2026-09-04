@@ -97,13 +97,16 @@ The example address is a fixture, not a recommended recipient.
 export interface JpycApplicationConfigV1 {
   schemaVersion: "1";
   kind: "jpyc";
-  environment: "mainnet";
+  environment: "mainnet" | "testnet";
   chainId: number;
   tokenContract: string;
 }
 ```
 
-This contains no RPC URL, private key, signer, gas settings, or transaction configuration.
+The runtime shape represents both environments so compatibility remains Profile-driven. The
+verified `jpyc-current-mainnet` Profile accepts only `mainnet`; `testnet` is rejected by
+`JPYC-ENV-001`. This contains no RPC URL, private key, signer, gas settings, or transaction
+configuration.
 
 ## 4. Validation request
 

@@ -124,6 +124,11 @@ Official current Registry cases:
 
 No test contacts an RPC endpoint or block explorer.
 
+The M3 suite covers the four official current chain/contract pairs, EIP-55 warning policy,
+unsupported routes, recipient/contract confusion, exact Registry integrity, and generic versus
+provenance-backed historical contract findings. It spies on `fetch` and verifies that validation
+does not mutate inputs or perform network access.
+
 ## 7. Scanner tests
 
 - JSON exact keys

@@ -1,9 +1,10 @@
 # 06 — Initial Rule Catalog
 
 > **Implementation status:** The authorized M2 Bank subset implements `BANK-CODE-001` through
-> `BANK-HOLDER-006` as applicable, excluding `BANK-HOLDER-007`. The experimental Bank rules,
-> JPYC rules, Scanner rules, and Registry change-impact rules remain unimplemented. Registry
-> change-impact also requires a separately specified change taxonomy before IDs are assigned.
+> `BANK-HOLDER-006` as applicable, excluding `BANK-HOLDER-007`. M3 implements all JPYC P0 rules.
+> The experimental Bank rules, Scanner rules, and Registry change-impact rules remain
+> unimplemented. Registry change-impact also requires a separately specified change taxonomy
+> before IDs are assigned.
 
 ## 1. Rule policy
 
@@ -105,6 +106,10 @@ Implementations must not elevate them to verified defaults.
 - Token symbol/name/decimals are not used; no RPC is performed.
 - Address syntax does not prove ownership or ability to receive.
 - Lowercase addresses may be syntactically valid; checksum policy is warning-first.
+- M3 uses `viem` only for pure EIP-55 address formatting. It creates no client or transport.
+- `JPYC-CONTRACT-003` suppresses the generic mismatch only for an exact historical/deprecated
+  Registry entry whose provenance is `official` or `verified-historical`. Third-party entries do
+  not receive specialized wording.
 
 ## 7. Scanner rules — P0
 

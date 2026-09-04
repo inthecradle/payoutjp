@@ -30,10 +30,11 @@ function validateItemIndex(value: number): number {
   return value;
 }
 
-function assertRegistryReferences(
+function selectReferencedRegistries(
   profile: CompatibilityProfileV1,
   registries: ReadonlyMap<string, RegistryEnvelopeV1<BankDirectoryRegistryV1>>,
-): void {
+): ReadonlyMap<string, RegistryEnvelopeV1<BankDirectoryRegistryV1>> {
+  const selected = new Map<string, RegistryEnvelopeV1<BankDirectoryRegistryV1>>();
   for (const reference of profile.registries) {
     const registry = registries.get(reference.id);
     if (registry === undefined || registry.version !== reference.version) {
@@ -42,7 +43,9 @@ function assertRegistryReferences(
     if (registry.sha256 !== reference.sha256) {
       throw new PayoutJpIntegrityError("PJP_REGISTRY_DIGEST_MISMATCH");
     }
+    selected.set(registry.id, registry);
   }
+  return selected;
 }
 
 function verifyRegistries(
@@ -97,8 +100,8 @@ export function validateBankTransferDestinationV1(
 
   const itemIndex = validateItemIndex(options.itemIndex ?? 0);
   const itemId = createItemId(destination.id ?? `item-${String(itemIndex + 1).padStart(6, "0")}`);
-  const registries = verifyRegistries(options.registries ?? new Map());
-  assertRegistryReferences(profile, registries);
+  const verifiedRegistries = verifyRegistries(options.registries ?? new Map());
+  const registries = selectReferencedRegistries(profile, verifiedRegistries);
 
   const enabledConfigurations = profile.rules.filter((configuration) => configuration.enabled);
   if (

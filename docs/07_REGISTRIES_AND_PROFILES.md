@@ -38,7 +38,7 @@ A Profile pins Registry ID, version, and SHA-256 digest.
 
 ## 3. JPYC official Registry snapshot
 
-Verified from the official JPYC GitHub organization on 2026-09-02.
+Verified from the official JPYC GitHub organization on 2026-09-02 and rechecked on 2026-09-04.
 
 | Network | Chain ID | Current contract |
 |---|---:|---|
@@ -85,6 +85,11 @@ Suggested registry file:
 
 The implementation adds all four entries and calculates the real digest.
 
+The checked-in snapshot is `fixtures/jpyc/registry/jpyc-official-mainnet.json`, with digest
+`17fa561fc0135c43660a8ead841f169690d7f94dc3f99c7b41f8f2a2241576bf`. Entries use canonical
+environment/chain/status/address ordering before digest calculation. The package exports the same
+verified snapshot for default local validation; validation never refreshes it over the network.
+
 ## 4. JPYC current Profile
 
 `jpyc-current-mainnet@2026.09.02`
@@ -107,6 +112,9 @@ Profile behavior:
 - current contract must exactly match normalized address;
 - checksum issue is warning;
 - no symbol/decimals/on-chain verification.
+
+`JpycApplicationConfigV1` represents `mainnet` and `testnet` as input shapes so environment support
+is not hard-coded into parsing. This Profile enables `JPYC-ENV-001` with a mainnet-only allowlist.
 
 ## 5. Historical/prepaid JPYC handling
 

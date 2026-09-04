@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1",
+  "rail": "jpyc",
+  "id": "recipient-jpyc-001",
+  "chainId": 137,
+  "walletAddress": "0x1111111111111111111111111111111111111111"
+}
