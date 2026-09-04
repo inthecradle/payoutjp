@@ -2,6 +2,18 @@
 export const version = "0.0.0";
 
 export {
+  type FindingLocationV1,
+  FindingLocationV1Schema,
+  type FindingV1,
+  FindingV1Schema,
+  type RemediationV1,
+  RemediationV1Schema,
+  type SafeObservedValueV1,
+  SafeObservedValueV1Schema,
+  safeObservedValueClassificationValues,
+} from "./finding.js";
+
+export {
   createItemId,
   createProfileId,
   createRegistryId,
