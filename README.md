@@ -1,5 +1,7 @@
 # PayoutJP
 
+[English](./README.md) | [日本語](./README.ja.md)
+
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
