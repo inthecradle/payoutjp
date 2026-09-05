@@ -3,9 +3,9 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: `0.1.0-alpha.1` release preparation. Core, the conservative Bank subset, and the
-> single-destination Bank CLI are the first npm release scope. JPYC is implemented as an unpublished
-> library preview. Scanner and Action remain placeholders. No npm package has been published yet.
+> Status: `0.1.0-alpha.1` free OSS alpha. Core, the conservative Bank subset, and the
+> single-destination Bank CLI are published on npm under the `alpha` tag. JPYC is implemented as an
+> unpublished library preview. Scanner and Action remain placeholders.
 
 ## Design goals
 
@@ -52,7 +52,7 @@ and GitHub Action behavior remain outside the implemented scope.
 The current CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
 select a Profile explicitly:
 
-After the alpha is published:
+Install the alpha:
 
 ```sh
 npm install --global @payoutjp/cli@alpha
@@ -97,7 +97,7 @@ Bank Registry is bundled; `bank-generic-jp` performs conservative structural che
 
 ## Library packages
 
-The first alpha prepares `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`. The workspace root,
+The first alpha publishes `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`. The workspace root,
 `@payoutjp/jpyc`, `@payoutjp/scanner`, and `@payoutjp/action` remain private npm packages. Source code
 in this repository is covered by the repository license even when its package is not published.
 

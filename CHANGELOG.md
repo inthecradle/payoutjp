@@ -9,7 +9,7 @@ breaking changes.
 
 ## [0.1.0-alpha.1] - 2026-09-05
 
-First free OSS alpha prepared for local packaging.
+First free OSS alpha published to npm and released from the public source repository.
 
 ### Added
 
