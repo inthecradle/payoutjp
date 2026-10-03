@@ -1,0 +1,2 @@
+# Keep formatter inputs and deterministic fixtures identical on every supported OS.
+* text=auto eol=lf

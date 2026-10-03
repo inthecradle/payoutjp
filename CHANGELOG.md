@@ -36,6 +36,8 @@ Source candidate: `0.1.0-alpha.2`, not published. Public package scope remains C
 
 - Invalid destination IDs return input errors (exit 2) instead of internal errors (exit 3).
 - Prepared validators isolate caller-owned Profile parameters and Registry data from later mutations.
+- Windows checkouts preserve LF for formatter inputs and deterministic fixtures. CI runs each OS
+  to completion independently so one platform failure does not cancel the other results.
 
 ### Compatibility and verification
 

@@ -12,6 +12,8 @@ Thank you for helping improve PayoutJP.
 ## Development
 
 PayoutJP requires Node.js 24 and pnpm 11.25.0 through Corepack.
+Tracked text uses LF on every OS through `.gitattributes`, including Windows checkouts and golden
+fixtures. Preserve that convention so formatting and deterministic reports agree across platforms.
 
 ```sh
 corepack enable pnpm
