@@ -3,9 +3,12 @@
 Deterministic validation contracts, report aggregation, rule execution, Registry integrity checks,
 and redaction primitives for PayoutJP.
 
-`0.1.0-alpha.1` is the recorded published release; `0.1.0-alpha.2` is an unpublished source candidate.
-Requires Node.js 24. The candidate preserves `ValidationReportV1` and exports `ItemIdSchema` so
+Version `0.1.0-alpha.2` requires Node.js 24. It preserves `ValidationReportV1` and exports `ItemIdSchema` so
 adapters can validate report-visible identifiers at the input boundary.
+
+```sh
+npm install @payoutjp/core@0.1.0-alpha.2
+```
 
 For reproducibility, reports identify the tool, Profile versions, and exact Registry digests, and
 omit timestamps. Account holders are redacted, account numbers masked, and wallet addresses shortened.

@@ -7,6 +7,8 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] - 2026-10-03
+
 Source candidate: `0.1.0-alpha.2`, not published. Public package scope remains Core/Bank/CLI.
 
 ### Added
@@ -72,5 +74,6 @@ First free OSS alpha published to npm and released from the public source reposi
 
 There is no migration from an earlier published version.
 
-[Unreleased]: https://github.com/inthecradle/payoutjp/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/inthecradle/payoutjp/compare/v0.1.0-alpha.2...HEAD
+[0.1.0-alpha.2]: https://github.com/inthecradle/payoutjp/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/inthecradle/payoutjp/releases/tag/v0.1.0-alpha.1

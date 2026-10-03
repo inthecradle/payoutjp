@@ -1,11 +1,20 @@
 # @payoutjp/cli
 
 Local Bank destination validation with deterministic text/JSON reports and CI exit codes.
-The `0.1.0-alpha.2` source candidate adds JSON/CSV batch audit, explicit CSV mappings, Japanese
-human diagnostics, and setup/inspection commands. It is not yet published; the recorded npm
-release `0.1.0-alpha.1` supports single JSON `validate` only. Requires Node.js 24.
+Version `0.1.0-alpha.2` adds JSON/CSV batch audit, explicit CSV mappings, Japanese human diagnostics,
+and setup/inspection commands. Requires Node.js 24. Alpha.1 supports single JSON `validate` only.
 
-From an alpha.2 source checkout, install dependencies and build, then define a local command:
+For the npm distribution:
+
+```sh
+npm install --global @payoutjp/cli@0.1.0-alpha.2
+payoutjp init --template bank-csv --directory ./payoutjp-demo
+cd payoutjp-demo
+payoutjp doctor
+payoutjp audit recipients.csv --profile bank-generic-jp@0.1.0 --mapping columns.json --locale ja
+```
+
+From a source checkout, install dependencies and build, then define a local command:
 
 ```sh
 pnpm install --frozen-lockfile

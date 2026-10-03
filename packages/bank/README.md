@@ -3,8 +3,11 @@
 Conservative structural validation for Japanese bank-transfer destinations. The package does not
 bundle a production Bank Registry and does not verify account existence or ownership.
 
-`0.1.0-alpha.1` is the recorded published release. The unpublished `0.1.0-alpha.2` source candidate
-adds `prepareBankTransferValidatorV1` for repeated validation. Requires Node.js 24.
+Version `0.1.0-alpha.2` adds `prepareBankTransferValidatorV1` for repeated validation. Requires Node.js 24.
+
+```sh
+npm install @payoutjp/bank@0.1.0-alpha.2
+```
 
 ```ts
 import { prepareBankTransferValidatorV1 } from "@payoutjp/bank";
