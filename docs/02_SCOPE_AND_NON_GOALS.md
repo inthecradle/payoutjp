@@ -10,8 +10,8 @@
 - JPYC destination/application-configuration validation is implemented as an unpublished library
   preview. JPYC CLI/npm expansion, mixed-rail batches, YAML destination input, Scanner, and the
   dedicated GitHub Action remain deferred. Scanner and Action packages retain skeleton exports.
-- Strict TypeScript, Vitest, Biome, Node.js 24, and `pnpm verify` are configured. CI now defines
-  Ubuntu/macOS/Windows jobs; remote execution results are still pending.
+- Strict TypeScript, Vitest, Biome, Node.js 24, and `pnpm verify` are configured. Verification
+  passed on Ubuntu/macOS/Windows in [GitHub CI](https://github.com/inthecradle/payoutjp/actions/runs/37106310595).
 
 ## 2. Candidate target-state scope
 

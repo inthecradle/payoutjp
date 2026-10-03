@@ -154,7 +154,8 @@ pnpm release:check
 このコマンドがpublish、タグ作成、成果物の保存を行うことはありません。
 
 `pnpm benchmark:bank`は合成データ1万件の読込・解析・検査・JSON化を計測します。
-CIはUbuntu/macOS/Windowsで実行する構成です。3 OSでの成功確認はGitHub上の実行後に行います。
+Ubuntu/macOS/WindowsのNode 24 CIは成功確認済みです。[検証記録](./docs/11_TEST_STRATEGY.md)を参照してください。
+配布前にはリリース対象コミットのGitHub CIも確認します。
 
 プロジェクトとリリースの方針については、[CONTRIBUTING.md](./CONTRIBUTING.md)、
 [SECURITY.md](./SECURITY.md)、[CHANGELOG.md](./CHANGELOG.md)、[RELEASING.md](./RELEASING.md)を

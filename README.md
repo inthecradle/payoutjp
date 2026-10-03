@@ -153,8 +153,8 @@ them into a temporary clean consumer, checks their manifests and licenses, impor
 and executes the packaged CLI. It never publishes, tags, or retains artifacts.
 
 `pnpm benchmark:bank` measures synthetic 10,000-row Bank audits, including parsing and report
-serialization. CI is configured for Ubuntu, macOS, and Windows; adding the matrix does not establish
-that all three platforms have passed. Review the GitHub runs before release.
+serialization. Node 24 verification passed on Ubuntu, macOS, and Windows; see
+[test verification](./docs/11_TEST_STRATEGY.md). Review the release commit's GitHub runs before publishing.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md),
 [CHANGELOG.md](./CHANGELOG.md), and [RELEASING.md](./RELEASING.md) for project and release policy.

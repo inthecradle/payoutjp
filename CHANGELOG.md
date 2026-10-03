@@ -42,8 +42,10 @@ Source candidate: `0.1.0-alpha.2`, not published. Public package scope remains C
 ### Compatibility and verification
 
 - Report schema remains version 1; bundled Profile and Registry versions/contents are unchanged.
-- Local Node 24 verification and packed Core/Bank/CLI consumer checks passed. Linux/Windows CI
-  execution and independent usability evaluation remain pending.
+- Node 24 verification passed on Ubuntu/macOS/Windows. Linux production dependency audit,
+  packed Core/Bank/CLI consumers, and synthetic performance checks passed in
+  [GitHub CI](https://github.com/inthecradle/payoutjp/actions/runs/37106310595).
+  Independent usability evaluation remains pending.
 - No production Bank Registry is bundled. YAML/JPYC CLI input, mixed-rail/Profile batches,
   Scanner, and the dedicated Action remain deferred.
 

@@ -2,7 +2,9 @@
 
 > Source alpha.2 includes Bank audit, CSV, setup, and prepared-validator tests. Scanner/Action test
 > sections remain target-state requirements. The 2026-10-03 local run passed 27 files / 365 tests
-> on Node 24.14.0/macOS; Linux/Windows runs and independent user evaluation remain unverified.
+> on Node 24.14.0/macOS. Node 24 Ubuntu/macOS/Windows verification subsequently passed in
+> [GitHub CI](https://github.com/inthecradle/payoutjp/actions/runs/37106310595).
+> Independent user evaluation remains unverified.
 
 ## 1. Objectives
 
@@ -192,6 +194,11 @@ output, config and flag precedence, Profile/Registry loading, the experimental g
 with normal and 10% invalid cases. It includes input read/parse, artifact preparation, validation,
 and JSON serialization, and excludes process startup/report file writing. Report median duration
 and peak RSS; goals are 5 seconds and 512 MiB. Local results are not hosted-CI or production-data evidence.
+
+The 2026-10-03 Linux CI measurement on Node 24.21.0 passed: 287 ms normal median, 301 ms for
+10% invalid rows, and 287 MiB peak RSS. These are synthetic benchmark results, not production-bank
+or independent usability evidence. The Windows checkout initially failed formatting because Git
+converted LF to CRLF; `.gitattributes` now fixes tracked text to LF on every OS.
 
 ## 9. GitHub Action tests
 
