@@ -10,9 +10,13 @@ import {
   type RegistryEnvelopeV1,
   type Rule,
 } from "@payoutjp/core";
-import { BankTransferDestinationV1Schema, type BankTransferDestinationV1 } from "./destination.js";
+import { BankTransferDestinationV1Schema } from "./destination.js";
 import { bankGenericJpProfileV1 } from "./profile.js";
-import { type BankDirectoryRegistryV1, loadBankDirectoryRegistryV1 } from "./registry.js";
+import {
+  type BankDirectoryRegistryV1,
+  type BankEntryV1,
+  loadBankDirectoryRegistryV1,
+} from "./registry.js";
 import { type BankRuleContextV1, bankRules } from "./rules.js";
 
 const registryRuleIds = new Set(["BANK-CODE-002", "BANK-BRANCH-002", "BANK-BRANCH-003"]);
@@ -79,34 +83,46 @@ function effectiveRule(
   };
 }
 
-/**
- * Validates one destination synchronously against an exact local Profile and Registry set.
- * No normalization, network access, or input mutation is performed.
- */
-export function validateBankTransferDestinationV1(
-  input: unknown,
-  options: ValidateBankTransferDestinationV1Options = {},
-): readonly FindingV1[] {
-  const parsed = BankTransferDestinationV1Schema.safeParse(input);
-  if (!parsed.success) {
-    throw new PayoutJpInputError();
+function freezeSnapshot<T>(value: T): T {
+  if (value !== null && typeof value === "object") {
+    for (const entry of Object.values(value)) freezeSnapshot(entry);
+    Object.freeze(value);
   }
-  const destination: BankTransferDestinationV1 = parsed.data;
-  const profile = loadCompatibilityProfileV1(options.profile ?? bankGenericJpProfileV1, {
+  return value;
+}
+
+/** Prepares an owned immutable Profile/Registry snapshot once for repeated local validation. */
+export function prepareBankTransferValidatorV1(
+  options: Omit<ValidateBankTransferDestinationV1Options, "itemIndex"> = {},
+): (input: unknown, itemIndex?: number) => readonly FindingV1[] {
+  const decodedProfile = loadCompatibilityProfileV1(options.profile ?? bankGenericJpProfileV1, {
     rules: bankRules,
     ...(options.allowExperimental === undefined
       ? {}
       : { allowExperimental: options.allowExperimental }),
   });
-  if (profile.rail !== "bank_transfer") {
-    throw new PayoutJpConfigurationError("PJP_CONFIG_INVALID");
+  // Profile params are unknown at the Core boundary and can still alias caller-owned arrays.
+  const profile = freezeSnapshot(structuredClone(decodedProfile));
+  if (profile.rail !== "bank_transfer") throw new PayoutJpConfigurationError("PJP_CONFIG_INVALID");
+  const registries = selectReferencedRegistries(
+    profile,
+    verifyRegistries(options.registries ?? new Map()),
+  );
+  const bankIndex = new Map<string, BankEntryV1[]>();
+  const branchIndex = new Map<string, BankEntryV1[]>();
+  for (const registry of registries.values()) {
+    freezeSnapshot(registry);
+    for (const bank of registry.payload.banks) {
+      const banks = bankIndex.get(bank.code) ?? [];
+      banks.push(bank);
+      bankIndex.set(bank.code, banks);
+      for (const branch of bank.branches) {
+        const owners = branchIndex.get(branch.code) ?? [];
+        owners.push(bank);
+        branchIndex.set(branch.code, owners);
+      }
+    }
   }
-
-  const itemIndex = validateItemIndex(options.itemIndex ?? 0);
-  const itemId = createItemId(destination.id ?? `item-${String(itemIndex + 1).padStart(6, "0")}`);
-  const verifiedRegistries = verifyRegistries(options.registries ?? new Map());
-  const registries = selectReferencedRegistries(profile, verifiedRegistries);
-
   const enabledConfigurations = profile.rules.filter((configuration) => configuration.enabled);
   if (
     enabledConfigurations.some((configuration) => registryRuleIds.has(configuration.id)) &&
@@ -114,24 +130,38 @@ export function validateBankTransferDestinationV1(
   ) {
     throw new PayoutJpIntegrityError("PJP_REGISTRY_NOT_FOUND");
   }
-
   const ruleById = new Map(bankRules.map((rule) => [rule.id, rule]));
   const paramsById = new Map<string, Readonly<Record<string, unknown>>>();
   const selectedRules = enabledConfigurations.map((configuration) => {
     const rule = ruleById.get(configuration.id);
-    if (rule === undefined) {
-      throw new PayoutJpConfigurationError("PJP_RULE_UNKNOWN");
-    }
-    paramsById.set(rule.id, rule.parseParams(configuration.params));
+    if (rule === undefined) throw new PayoutJpConfigurationError("PJP_RULE_UNKNOWN");
+    paramsById.set(rule.id, freezeSnapshot(rule.parseParams(configuration.params)));
     return effectiveRule(rule, configuration.severity);
   });
+  return (input, suppliedIndex = 0) => {
+    const parsed = BankTransferDestinationV1Schema.safeParse(input);
+    if (!parsed.success) throw new PayoutJpInputError();
+    const destination = parsed.data;
+    const itemIndex = validateItemIndex(suppliedIndex);
+    const itemId = createItemId(destination.id ?? `item-${String(itemIndex + 1).padStart(6, "0")}`);
+    return executeRules(selectedRules, (rule) => ({
+      destination,
+      profile,
+      params: paramsById.get(rule.id) ?? {},
+      registries,
+      itemIndex,
+      itemId,
+      bankIndex,
+      branchIndex,
+    }));
+  };
+}
 
-  return executeRules(selectedRules, (rule) => ({
-    destination,
-    profile,
-    params: paramsById.get(rule.id) ?? {},
-    registries,
-    itemIndex,
-    itemId,
-  }));
+/** Validates one destination without normalization, input mutation, network access or I/O. */
+export function validateBankTransferDestinationV1(
+  input: unknown,
+  options: ValidateBankTransferDestinationV1Options = {},
+): readonly FindingV1[] {
+  if (!BankTransferDestinationV1Schema.safeParse(input).success) throw new PayoutJpInputError();
+  return prepareBankTransferValidatorV1(options)(input, options.itemIndex ?? 0);
 }

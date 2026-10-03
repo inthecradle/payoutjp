@@ -46,6 +46,9 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
+      csv-parse:
+        specifier: ^7.0.3
+        version: 7.0.3
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -477,6 +480,9 @@ packages:
   commander@15.0.0:
     resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
     engines: {node: '>=22.12.0'}
+
+  csv-parse@7.0.3:
+    resolution: {integrity: sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw==}
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -1035,6 +1041,8 @@ snapshots:
   chai@6.2.2: {}
 
   commander@15.0.0: {}
+
+  csv-parse@7.0.3: {}
 
   detect-libc@2.1.2: {}
 

@@ -119,11 +119,28 @@ MVP may produce local tarballs with `pnpm pack` instead of publishing.
 
 ### First free OSS alpha
 
-`0.1.0-alpha.1` prepares `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli` only. The workspace
+`0.1.0-alpha.1` published `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli` only. The workspace
 root and JPYC/Scanner/Action packages remain private. `pnpm release:check` builds and packs all three
 public packages, rejects missing licenses and leaked `workspace:` dependency specifications, installs
 them together in a clean temporary consumer, imports public APIs, and executes the packaged CLI.
 Publishing and tagging remain explicit maintainer operations documented in `RELEASING.md`.
+
+### Alpha.2 source candidate and migration
+
+The manifests and tool metadata prepare unpublished `0.1.0-alpha.2` for the same three-package
+boundary. Report schemaVersion stays `1`; the bundled `bank-generic-jp@0.1.0` Profile and Registry
+snapshots keep their versions and contents. Tool versions and Profile versions are independent.
+
+New Bank audit defaults to generated IDs and requires explicit `--id-policy input` for input IDs.
+Existing single `validate` report replacement remains supported, with atomic writes and protected
+input/config/artifact paths. Audit report replacement requires `--overwrite-report`.
+Invalid destination IDs are typed input errors rather than internal errors. Bank/branch observations
+become metadata-only to protect incorrectly mapped sensitive values. Review consumers relying on
+those human displays; canonical finding IDs, fields, and report v1 remain the machine contract.
+
+Before publishing, review the changelog and packed consumers and confirm successful Node 24
+Ubuntu/macOS/Windows CI runs. No alpha.2 release tag or npm publication is implied by source version
+changes. Full-version immutable tags apply to these CLI packages; moving Action tags remain deferred.
 
 ## 12. RC checklist
 

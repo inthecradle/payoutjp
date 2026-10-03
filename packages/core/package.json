@@ -1,6 +1,6 @@
 {
   "name": "@payoutjp/core",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Deterministic validation contracts, engine, and redaction primitives for PayoutJP",
   "license": "Apache-2.0",
   "repository": {

@@ -1,11 +1,13 @@
 # 08 — CLI Specification
 
+> **Source candidate:** `0.1.0-alpha.2`, unpublished. This specification describes implemented Bank
+> commands unless explicitly marked deferred. Published alpha.1 supports single JSON `validate` only.
+> See the [Bank CSV guide](./PRACTICAL_BANK_CLI.md) for a runnable source-checkout quickstart.
+
 Binary name: `payoutjp`
 
-> **Implementation status:** PJP-401–PJP-403, PJP-406, and PJP-410–PJP-412 are implemented as a
-> JSON single-Bank-destination `validate` command with text/JSON output and the exit-code policy.
-> The other commands, YAML/CSV input, JPYC CLI adaptation, `scan`, and dedicated Action integration
-> remain deferred. Possible Registry diff or impact commands have no approved contracts yet.
+YAML/JPYC destination input, mixed-rail or mixed-Profile batches, scan, dedicated Action, and
+Registry diff/impact remain deferred. YAML is supported for the local configuration file.
 
 ## 1. Global behavior
 
@@ -23,6 +25,7 @@ Global options:
 | `--fail-on <error|warning|never>` | config or `error` | Exit threshold. |
 | `--profile <id[@version]>` | input/config dependent | Profile selection. |
 | `--experimental` | false | Permit an experimental local Profile. |
+| `--locale <en|ja>` | `en` | Human text/guidance language; canonical JSON is unchanged. |
 | `--quiet` | false | Suppress non-report informational output. |
 | `--version` | — | Print CLI version. |
 | `--help` | — | Print help. |
@@ -47,7 +50,7 @@ Rules:
 
 ### 3.1 `validate`
 
-Validate one UTF-8 JSON Bank request or destination.
+Validate one UTF-8 JSON Bank request or destination. `<input>` is a path or `-` for stdin.
 
 ```bash
 payoutjp validate <input> --profile <profile>
@@ -64,23 +67,30 @@ payoutjp validate fixtures/bank/destinations/valid-synthetic.json \
   --profile bank-generic-jp@0.1.0
 ```
 
-Sections 3.2–3.6 describe the target-state command design only and are not exposed by the current
-binary.
-
 ### 3.2 `audit`
 
-Validate a batch manifest or canonical CSV.
+Validate a UTF-8 Bank JSON batch or header CSV using one Profile.
 
 ```bash
-payoutjp audit <input> [--rail <rail>] --profile <profile>
+payoutjp audit <input> [--rail bank_transfer] [--profile <profile>]
 ```
 
 Rules:
 
-- JSON/YAML batch can contain mixed rails and per-item Profiles.
-- CSV is one rail and one Profile per command.
-- UTF-8 only.
-- Empty batch is a user input error.
+- `.json`/`.csv` infer the input format; stdin or other extensions require `--input-format json|csv`.
+- JSON items may omit `profileId` when `--profile` is supplied. Otherwise each interpretable item
+  must supply the same selector. Conflicting selectors or another rail are whole-command errors.
+- CSV requires `--profile`; number fields stay strings. Unknown or duplicate headers are errors.
+- `--mapping <path>` accepts explicit JSON column/account-type mappings and ignored columns.
+- `--id-policy generated|input` defaults to generated IDs. Input mode requires all IDs to be
+  non-sensitive, unique, at most 128 characters, and consistent between item and destination.
+- Empty batches and invalid document syntax are input errors. Row schema errors become error
+  findings (`INPUT-SCHEMA-001`, `input.schema.invalid`) while the remaining rows continue.
+- Input is bounded to 50 MiB / 100,000 rows / 100,000 findings. CSV records are limited to 64 KiB
+  and fields to 8 KiB. Exceeding limits aborts rather than truncating a successful report.
+- CSV findings carry physical start lines; JSON findings carry JSON Pointers.
+- Text shows at most 100 findings plus an omitted count; JSON contains the complete report.
+- Replacing an existing audit report requires `--overwrite-report`.
 
 Examples:
 
@@ -92,62 +102,58 @@ payoutjp audit recipients.csv \
   --output payoutjp-report.json
 ```
 
-### 3.3 `scan`
-
-Scan repository/configuration files for JPYC route configuration issues.
+### 3.3 `profiles list`
 
 ```bash
-payoutjp scan [paths...]
+payoutjp profiles list [--rail bank_transfer] [--all]
 ```
 
-Options:
+Returns installed Bank Profile identities/statuses as JSON. The default hides deprecated/retired;
+`--all` includes them. Listing experimental Profiles does not authorize validation with them.
 
-| Option | Description |
-|---|---|
-| `--include <glob...>` | Additional include globs. |
-| `--exclude <glob...>` | Additional exclude globs. |
-| `--max-file-bytes <n>` | Override safe file-size ceiling. |
-| `--profile <id>` | JPYC Profile; defaults to current mainnet Profile if configured. |
-
-Examples:
-
-```bash
-payoutjp scan . --profile jpyc-current-mainnet@2026.09.02
-payoutjp scan src config .env.production --format json
-```
-
-### 3.4 `profiles list`
-
-```bash
-payoutjp profiles list [--rail bank_transfer|jpyc] [--all]
-```
-
-Default hides deprecated/retired and marks experimental.
-
-### 3.5 `profiles show`
+### 3.4 `profiles show`
 
 ```bash
 payoutjp profiles show <id[@version]>
 ```
 
-Shows status, source notes, rules, parameters, and Registry references. It must not dump proprietary pack content beyond installed local data.
+Returns the installed Profile JSON: status, source notes, rules, parameters, and pinned Registry
+references. Inspection permits retired/experimental status without permitting their use by audit.
 
-### 3.6 `registry status`
+### 3.5 `registry status`
 
 ```bash
 payoutjp registry status [--json]
 ```
 
-Shows:
+Returns verified local Registry ID/version/digest/source metadata and Profile diagnosis. It checks
+all installed Profile references and fails on invalid digests or missing pins. It does not fetch updates
+or establish freshness, completeness, production eligibility, or account existence.
+`--json` is accepted for compatibility; inspection output is already pretty JSON.
 
-- ID/version
-- digest validity
-- source publisher
-- retrieved/effective date
-- Profile references
-- experimental/production eligibility
+### 3.6 `doctor`
 
-It does not fetch updates.
+```bash
+payoutjp doctor
+```
+
+Checks Node.js 24, local configuration, installed Bank Profiles/rule parameters, Registry digests,
+and pinned references. Returns JSON describing enabled rules and Registry lookup coverage.
+No file changes, update downloads, or production-readiness claims.
+
+### 3.7 `init`
+
+```bash
+payoutjp init --template bank-csv --directory ./payoutjp-demo
+```
+
+Creates a new directory with fictional CSV, explicit mappings, config, and instructions. Existing
+directories are rejected. `--template` defaults to `bank-csv`; `--directory` is required.
+
+### 3.8 Deferred commands
+
+`scan` and JPYC CLI adapters remain target-state designs in the Scanner specification. They are
+not exposed by this binary. Registry diff/impact requires a separately designed contract.
 
 ## 4. Input modes
 
@@ -192,6 +198,11 @@ Allowed when `--profile` is supplied.
 - For `--format json`, stdout contains JSON only.
 - No progress spinner in non-TTY or CI.
 - No ANSI color when `NO_COLOR` is set or output is not a TTY.
+- Profile/Registry/doctor/init inspection output is JSON independently of `--format text`.
+- Report writes are atomic. Inputs, config, mappings, and configured Profile/Registry files or
+  directories are protected, including symlink/hard-link aliases. Existing `validate` report
+  replacement remains supported; inspection output does not replace an existing file.
+- Failed commands may leave an older report untouched; use the exit code before uploading a report.
 
 ## 6. Text output
 
@@ -221,7 +232,7 @@ Action: Confirm the account number without converting or padding it automaticall
 
 ## 7. JSON output
 
-The implemented `validate` JSON output exactly matches `ValidationReportV1`. Canonical JSON:
+Both `validate` and `audit` JSON output match `ValidationReportV1`. Canonical JSON:
 
 - UTF-8
 - two-space indentation for file/stdout renderer
@@ -255,11 +266,15 @@ Examples:
 - Account number: `*****56` or shorter safe mask.
 - Wallet: `0x1234…abcd`.
 - Scanner: never print full source line.
+- Bank/branch observed values are metadata-only, protecting data placed in the wrong field.
+- Parser/schema/usage errors do not echo raw records, arbitrary keys, or argument values.
 - JSON output uses the same redaction. v0.1 has no unsafe `--show-raw` option.
 
 ## 10. Deterministic IDs
 
-If input item has no `id`, generate a stable ID from batch index only, e.g. `item-000001`. Do not hash sensitive raw data into a report-visible identifier.
+Audit generates an ID from batch index only, e.g. `item-000001`, by default even when an input ID
+exists. Opting into `--id-policy input` makes the supplied ID report-visible. These identifiers are
+not recipient matching keys across reordered inputs. Never hash sensitive data into visible IDs.
 
 ## 11. Error messages
 
@@ -269,7 +284,7 @@ A user-facing error must include:
 - safe description;
 - relevant path;
 - remediation;
-- no stack trace unless `PAYOUTJP_DEBUG=1` and even then no raw input values.
+- no stack trace or raw input values; this candidate has no debug bypass.
 
 ## 12. CLI acceptance tests
 

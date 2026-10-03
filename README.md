@@ -8,6 +8,8 @@ destinations before they reach a bank or wallet integration.
 > Status: `0.1.0-alpha.1` free OSS alpha. Core, the conservative Bank subset, and the
 > single-destination Bank CLI are published on npm under the `alpha` tag. JPYC is implemented as an
 > unpublished library preview. Scanner and Action remain placeholders.
+> Source checkout: `0.1.0-alpha.2` candidate adds Bank JSON/CSV audit, mappings and setup commands.
+> These additions are not yet published.
 
 ## Design goals
 
@@ -43,21 +45,22 @@ packages/
 `@payoutjp/core` provides the deterministic validation contracts and engine. `@payoutjp/bank`
 provides conservative Bank validation. `@payoutjp/jpyc` provides JPYC destination and application
 configuration validation against an exact official Registry snapshot. `@payoutjp/cli` provides the
-implemented JSON single-Bank-destination `validate` command with text/JSON reports and CI exit
-codes. Scanner and Action retain bootstrap exports.
+Bank `validate` and JSON/CSV batch `audit` commands with text/JSON reports and CI exit codes.
+It also provides explicit CSV mappings, Japanese human diagnostics, `init`, `doctor`, and local
+Profile/Registry inspection in the alpha.2 source candidate. Scanner and Action retain bootstrap exports.
 
 Production bank data, provider-specific Bank rules, experimental Zengin/Yucho Profiles, Scanner,
 and GitHub Action behavior remain outside the implemented scope.
 
 ## CLI
 
-The current CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
+The published alpha.1 CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
 select a Profile explicitly:
 
 Install the alpha:
 
 ```sh
-npm install --global @payoutjp/cli@alpha
+npm install --global @payoutjp/cli@0.1.0-alpha.1
 payoutjp --version
 ```
 
@@ -90,8 +93,9 @@ node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthet
 
 Use `--format json`, `--output <path>`, and `--fail-on <error|warning|never>` for CI. An explicit
 `--config` or `./payoutjp.config.yml` may provide `failOn` and local JSON Profile/Registry paths;
-relative paths resolve from the config file. YAML/CSV input, batch audit, profile/registry discovery,
-JPYC CLI validation, Scanner, and dedicated Action behavior are not included in this M4 subset.
+relative paths resolve from the config file. Source alpha.2 also supports Bank JSON/CSV audit and
+Profile/Registry inspection; see [Bank CSV guide](./docs/PRACTICAL_BANK_CLI.md). YAML/JPYC inputs,
+Scanner and dedicated Action remain deferred.
 
 PayoutJP checks local data and configuration against the selected Profile and Registry. It does not
 verify account existence, recipient identity, wallet ownership, or payment success. No production
@@ -102,6 +106,30 @@ Bank Registry is bundled; `bank-generic-jp` performs conservative structural che
 The first alpha publishes `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`. The workspace root,
 `@payoutjp/jpyc`, `@payoutjp/scanner`, and `@payoutjp/action` remain private npm packages. Source code
 in this repository is covered by the repository license even when its package is not published.
+
+## Try the alpha.2 source candidate
+
+After installing dependencies and running `pnpm build` from the repository root, keep the built CLI
+path available while changing directories:
+
+```sh
+PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
+payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+payoutjp init --template bank-csv --directory ./payoutjp-demo
+cd payoutjp-demo
+payoutjp doctor
+payoutjp audit recipients.csv --profile bank-generic-jp@0.1.0 --mapping columns.json --locale ja
+```
+
+The sample contains two fictional recipients. The second deliberately fails, returning exit code 1
+and its source line. Review that row and manually replace its fictional `12X4567` account number with
+`0123456` to get PASS. No values are corrected automatically.
+
+Use `--format json --output report.json` for the complete report. Replacing an existing audit report
+requires `--overwrite-report`. Row schema errors become `INPUT-SCHEMA-001` findings while other rows
+continue; malformed files or configuration abort the command. IDs are generated from row order by
+default. See the [Bank CSV guide (Japanese)](./docs/PRACTICAL_BANK_CLI.md) for mappings, JSON batches,
+stdin, local Registries, ID opt-in, limits, and CI usage.
 
 ## Development
 
@@ -124,6 +152,10 @@ all workspace packages.
 them into a temporary clean consumer, checks their manifests and licenses, imports their public APIs,
 and executes the packaged CLI. It never publishes, tags, or retains artifacts.
 
+`pnpm benchmark:bank` measures synthetic 10,000-row Bank audits, including parsing and report
+serialization. Node 24 verification passed on Ubuntu, macOS, and Windows; see
+[test verification](./docs/11_TEST_STRATEGY.md). Review the release commit's GitHub runs before publishing.
+
 See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md),
 [CHANGELOG.md](./CHANGELOG.md), and [RELEASING.md](./RELEASING.md) for project and release policy.
 
@@ -136,6 +168,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md),
 - [Rule catalog](./docs/06_RULE_CATALOG.md)
 - [Registries and profiles](./docs/07_REGISTRIES_AND_PROFILES.md)
 - [CLI specification](./docs/08_CLI_SPEC.md)
+- [Bank CSV guide (Japanese)](./docs/PRACTICAL_BANK_CLI.md)
 - [Scanner specification](./docs/09_SCANNER_SPEC.md)
 - [GitHub Action specification](./docs/10_GITHUB_ACTION_SPEC.md)
 - [Test strategy](./docs/11_TEST_STRATEGY.md)

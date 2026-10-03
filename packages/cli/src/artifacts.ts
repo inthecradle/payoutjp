@@ -1,5 +1,5 @@
 import type { Dirent, Stats } from "node:fs";
-import { lstat, readFile, readdir } from "node:fs/promises";
+import { lstat, readdir } from "node:fs/promises";
 import { extname, join } from "node:path";
 import {
   type BankDirectoryRegistryV1,
@@ -17,6 +17,8 @@ import {
   RegistryEnvelopeV1Schema,
 } from "@payoutjp/core";
 
+import { parseJson, readUtf8 } from "./io.js";
+
 type ArtifactKind = "profile" | "registry";
 
 function compareStrings(left: string, right: string): number {
@@ -29,7 +31,10 @@ function artifactError(kind: ArtifactKind): Error {
     : new PayoutJpIntegrityError("PJP_REGISTRY_INVALID");
 }
 
-async function collectJsonFiles(root: string, kind: ArtifactKind): Promise<readonly string[]> {
+export async function collectJsonFiles(
+  root: string,
+  kind: ArtifactKind,
+): Promise<readonly string[]> {
   let metadata: Stats;
   try {
     metadata = await lstat(root);
@@ -74,15 +79,13 @@ async function collectJsonFiles(root: string, kind: ArtifactKind): Promise<reado
 
 async function readJsonArtifact(path: string, kind: ArtifactKind): Promise<unknown> {
   try {
-    const contents = await readFile(path);
-    const decoded = new TextDecoder("utf-8", { fatal: true }).decode(contents);
-    return JSON.parse(decoded) as unknown;
+    return parseJson(await readUtf8(path));
   } catch {
     throw artifactError(kind);
   }
 }
 
-async function loadProfileCandidates(paths: readonly string[]): Promise<readonly unknown[]> {
+export async function loadProfileCandidates(paths: readonly string[]): Promise<readonly unknown[]> {
   const candidates: unknown[] = [bankGenericJpProfileV1];
   for (const root of paths) {
     for (const file of await collectJsonFiles(root, "profile")) {
@@ -104,6 +107,7 @@ export async function resolveBankProfile(
   selector: string,
   paths: readonly string[],
   allowExperimental: boolean,
+  allowRetired = false,
 ): Promise<CompatibilityProfileV1> {
   const candidates = await loadProfileCandidates(paths);
   const structuralProfiles = candidates.map((candidate) => {
@@ -125,10 +129,13 @@ export async function resolveBankProfile(
   return loadCompatibilityProfileV1(matches[0], {
     rules: bankRules,
     allowExperimental,
+    allowRetired,
   });
 }
 
-async function loadRegistryCandidates(paths: readonly string[]): Promise<readonly unknown[]> {
+export async function loadRegistryCandidates(
+  paths: readonly string[],
+): Promise<readonly unknown[]> {
   const candidates: unknown[] = [];
   for (const root of paths) {
     for (const file of await collectJsonFiles(root, "registry")) {

@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-Security fixes are currently provided only for the latest published `0.1.x` alpha. Until the first
-npm publication, the `main` branch is the only maintained development line.
+Security fixes are provided for the latest published `0.1.x` alpha and developed on `main`.
+The recorded published release is `0.1.0-alpha.1`; the source `0.1.0-alpha.2` candidate is unpublished.
 
 ## Reporting a vulnerability
 
@@ -27,3 +27,8 @@ confusion, package integrity, or ways to cross the no-money-movement boundary ar
 
 PayoutJP is a compatibility validator. It must not receive payment credentials or production payout
 data as part of a vulnerability report.
+
+For CSV/privacy reports, use synthetic values even when reproducing a wrong column mapping, an
+invalid field, or an input ID. Input IDs are report-visible metadata when explicitly enabled.
+For report-write issues, include synthetic file layouts and whether aliases or an existing report
+were involved; omit source rows and sensitive file names.

@@ -1,6 +1,6 @@
 {
   "name": "payoutjp-workspace",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "description": "Local-first compatibility validation for Japanese payout destinations",
   "license": "Apache-2.0",
@@ -28,7 +28,8 @@
     "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test",
     "audit:prod": "pnpm audit --prod",
     "test:consumer": "node scripts/test-packed-packages.mjs",
-    "release:check": "pnpm verify && pnpm audit:prod && pnpm test:consumer"
+    "release:check": "pnpm verify && pnpm audit:prod && pnpm test:consumer",
+    "benchmark:bank": "node scripts/benchmark-bank.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.12",

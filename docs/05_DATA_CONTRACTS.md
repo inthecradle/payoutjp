@@ -1,5 +1,10 @@
 # 05 — Data Contracts
 
+> **Source alpha.2 contract:** Bank JSON/CSV audit uses one Profile and the existing report v1.
+> Row schema issues become `INPUT-SCHEMA-001` errors with safe source locations; document/configuration
+> errors abort the command. JPYC library contracts are implemented, but JPYC CLI/CSV, YAML destination
+> input, and mixed-rail batches remain deferred. See the [Bank CSV guide](./PRACTICAL_BANK_CLI.md).
+
 > **Scope note:** These are candidate validation contracts. A cross-snapshot Registry change-impact
 > workflow is not specified here; its request shape, change taxonomy, join keys, stable IDs,
 > redaction policy, and report contract must be designed before implementation.
@@ -112,6 +117,10 @@ configuration.
 
 ### 4.1 Single item
 
+The shared design below includes JPYC library inputs. The implemented Bank CLI wrapper requires
+`schemaVersion`, `profileId`, and a Bank `destination` only; `applicationConfig` and unknown wrapper
+keys are rejected. A bare Bank destination is accepted with explicit CLI `--profile`.
+
 ```ts
 export interface SingleValidationRequestV1 {
   schemaVersion: "1";
@@ -121,14 +130,13 @@ export interface SingleValidationRequestV1 {
 }
 ```
 
-### 4.2 Batch manifest
+### 4.2 Implemented Bank audit manifest
 
 ```ts
 export interface BatchValidationItemV1 {
   id?: string;
-  profileId: string;
-  destination: BankTransferDestinationV1 | JpycDestinationV1;
-  applicationConfig?: JpycApplicationConfigV1;
+  profileId?: string;
+  destination: BankTransferDestinationV1;
 }
 
 export interface BatchValidationRequestV1 {
@@ -137,7 +145,16 @@ export interface BatchValidationRequestV1 {
 }
 ```
 
-Mixed rails are allowed only in JSON/YAML batch manifests. CSV is single rail/profile in v0.1.
+This is the successful item shape. The CLI accepts each raw item as `unknown` so malformed items
+can produce schema findings without discarding the batch. `items` must contain 1–100,000 entries;
+the top-level object and item wrappers reject unknown keys. All interpretable items resolve to one
+Bank Profile. `profileId` may be omitted with CLI `--profile`; otherwise every interpretable item
+must specify the same selector. Mixed rails/Profiles and `applicationConfig` are unsupported by audit.
+
+IDs default to generated row-order identifiers regardless of supplied IDs. `--id-policy input`
+requires non-sensitive, unique IDs of at most 128 characters; item/destination IDs must agree if
+both exist. Invalid explicit IDs abort the batch. Malformed destination fields instead become
+`INPUT-SCHEMA-001` findings. Generated IDs do not identify the same recipient after reordering.
 
 ## 5. Canonical CSV
 
@@ -148,14 +165,23 @@ id,bankCode,branchCode,accountType,accountNumber,accountHolder
 recipient-001,1234,001,ordinary,0123456,カ）サンプル
 ```
 
-### JPYC CSV headers
+Bank CSV accepts BOM, quoted multiline records, and CRLF/LF. Number fields stay strings without
+trimming, coercion, or automatic padding. `id` is optional. Explicit JSON mappings can rename
+columns, translate account-type values, and discard declared ignored columns; other unknown or
+duplicate headers abort. Undefined mapped account types fail that row. Findings include the
+physical record start line. Limits are 50 MiB input, 64 KiB CSV record, 8 KiB field, and
+100,000 findings. Oversized inputs fail explicitly rather than producing a truncated success report.
+
+### Deferred JPYC CSV design
 
 ```csv
 id,chainId,walletAddress,tokenContract
 recipient-002,137,0x1111111111111111111111111111111111111111,0xE7C3D8C9a439feDe00D2600032D5dB0Be71C3c29
 ```
 
-CLI flags supply `--rail` and `--profile`. `tokenContract` maps to optional application configuration. Unknown headers are rejected by default; a future lenient mode is not part of v0.1.
+This JPYC CSV design is not accepted by the current CLI. A future adapter would need to define
+application-configuration mapping explicitly. For implemented Bank CSV, `--profile` is required and
+`--rail bank_transfer` is an optional assertion.
 
 Encoding: UTF-8 only in v0.1. Shift-JIS/CP932 input support is future work and must be explicit rather than auto-detected.
 
@@ -310,6 +336,11 @@ export interface FindingV1 {
 ```
 
 `actual.display` must never contain a raw account holder or full account number. Full wallet addresses are shortened in normal reports.
+Bank/branch fields use metadata-only observations in source alpha.2, so incorrect column mappings
+cannot expose a name or account number as a supposedly public code. Schema findings contain no
+raw values or arbitrary unknown keys, and retain the selected Profile ID/version.
+CSV uses `location.line`; JSON audit uses `location.jsonPointer` such as
+`/items/0/destination/accountNumber`. Both retain zero-based `itemIndex`.
 
 ## 11. Item and report contracts
 
@@ -413,6 +444,8 @@ scan:
 ```
 
 Unknown root keys are rejected to prevent misspelled security options from being ignored.
+`scan` settings are accepted for shared-config compatibility but are inactive while Scanner is
+deferred. `paths` load local JSON only; they do not fetch or update a Registry.
 
 ## 14. Sort order
 
