@@ -4,7 +4,7 @@
 
 - Published `0.1.0-alpha.1` contains deterministic Core, conservative Bank validation, and the
   single-JSON Bank CLI. No production Bank Registry is bundled.
-- The unpublished `0.1.0-alpha.2` source candidate adds Bank JSON/CSV audit with one Profile,
+- Published `0.1.0-alpha.2` adds Bank JSON/CSV audit with one Profile,
   per-row diagnostics, explicit mappings, Japanese text, setup/inspection, bounded input, atomic
   output, and prepared immutable Bank validators.
 - JPYC destination/application-configuration validation is implemented as an unpublished library
@@ -105,7 +105,7 @@ The sections below describe possible release scope. They are not an availability
 
 ## 4. Scope by phase
 
-| Capability | Current source candidate | Broader RC | Future |
+| Capability | Current alpha release | Broader RC | Future |
 |---|---:|---:|---:|
 | TypeScript API | Core/Bank; private JPYC preview | Yes | Yes |
 | CLI text/JSON | Yes | Yes | Yes |

@@ -14,12 +14,12 @@ The `0.1.0-alpha.1` npm set contains only:
 The workspace root and JPYC, Scanner, and Action packages remain private. No production Bank
 Registry is included.
 
-## Next local candidate
+## Current alpha
 
-The source manifests now prepare `0.1.0-alpha.2` for the same Core/Bank/CLI boundary.
-The changes are listed under Unreleased in [CHANGELOG.md](./CHANGELOG.md). Review the
-[Bank CSV guide](./docs/PRACTICAL_BANK_CLI.md), migration notes, and cross-platform CI results before
-a separate maintainer publish. Never reuse the alpha.1 tag or version.
+`0.1.0-alpha.2` is published for Core/Bank/CLI under the npm `alpha` tag. The Registry consumer
+and artifact checksums are verified. Changes and migration notes are recorded in
+[CHANGELOG.md](./CHANGELOG.md) and the [release notes](./docs/releases/0.1.0-alpha.2.md).
+Future publishes remain separate maintainer operations. Never reuse a released version or tag.
 
 ## GitHub review preparation
 
@@ -63,7 +63,7 @@ pnpm --filter @payoutjp/cli publish --access public --tag alpha
 ```
 
 Verify the installed CLI from a clean directory before creating the immutable full-version tag
-(next candidate: `v0.1.0-alpha.2`) and GitHub Release. Do not create moving `v0` or `v0.1` tags for
+(alpha.2: `v0.1.0-alpha.2`) and GitHub Release. Do not create moving `v0` or `v0.1` tags for
 this CLI-only alpha; those tags are reserved for a future dedicated Action release.
 
 ## Rollback

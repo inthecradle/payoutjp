@@ -9,7 +9,7 @@ breaking changes.
 
 ## [0.1.0-alpha.2] - 2026-10-03
 
-Source candidate: `0.1.0-alpha.2`, not published. Public package scope remains Core/Bank/CLI.
+Published to npm under the `alpha` tag. Public package scope remains Core/Bank/CLI.
 
 ### Added
 

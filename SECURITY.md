@@ -3,7 +3,7 @@
 ## Supported versions
 
 Security fixes are provided for the latest published `0.1.x` alpha and developed on `main`.
-The recorded published release is `0.1.0-alpha.1`; the source `0.1.0-alpha.2` candidate is unpublished.
+The latest published alpha is `0.1.0-alpha.2`, available under the npm `alpha` tag.
 
 ## Reporting a vulnerability
 

@@ -1,16 +1,12 @@
 # Bank CSVの一括検査
 
-`0.1.0-alpha.2`ソース候補の機能です。公開済み`0.1.0-alpha.1`には含まれません。
-Node.js 24 / pnpm 11.25.0を使い、リポジトリ直下から次を実行します。
-CLIの絶対パスを保持する関数により、サンプルディレクトリへ移動しても実行できます。
+公開済み`0.1.0-alpha.2`の機能です。alpha.1には含まれません。
+Node.js 24でCLIの版を固定してインストールします。
 
 ## 初めて試す
 
 ```sh
-pnpm install --frozen-lockfile
-pnpm build
-PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
-payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+npm install --global @payoutjp/cli@0.1.0-alpha.2
 payoutjp init --template bank-csv --directory ./payoutjp-demo
 cd payoutjp-demo
 payoutjp doctor
@@ -19,6 +15,20 @@ payoutjp audit recipients.csv --profile bank-generic-jp@0.1.0 --mapping columns.
 
 2件の架空データを検査します。3行目の口座番号は意図的な異常値です。元CSVで`12X4567`を
 架空の正常値`0123456`に直して再実行するとPASSになります。実際の口座番号を自動変換しません。
+
+## ソースから利用する
+
+Node.js 24 / pnpm 11.25.0を使い、リポジトリ直下でビルドします。
+ディレクトリ移動後も実行できるよう、CLIの絶対パスを保持する関数を定義します。
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build
+PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
+payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+```
+
+この関数からも上記と同じ`init`・`doctor`・`audit`を実行できます。
 
 ## 手持ちのCSV
 
@@ -122,7 +132,7 @@ digest一致はRegistryの内容の整合性であり、最新性・網羅性・
 ## CIと終了コード
 
 CIでは公開済み版と追加機能の範囲を確認し、使用するpackage版を固定します。
-次期版の公開前はソースからビルドして通常のcommand stepで使えます。
+配布CLIは`npm install --global @payoutjp/cli@0.1.0-alpha.2`で版を固定します。ソースをビルドする通常のcommand stepでも利用できます。
 
 ```yaml
 - name: Build

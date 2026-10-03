@@ -5,10 +5,9 @@
 PayoutJPは、日本の銀行振込およびJPYCの送金先を、銀行やウォレットとの統合に渡す前に検証するための
 ローカルファーストな互換性ツールキットです。
 
-> ステータス: `0.1.0-alpha.1` 無料OSS alpha。Core、保守的なBankサブセット、および単一送金先用の
-> Bank CLIをnpmで`alpha`タグとして公開しています。JPYCは未公開のライブラリプレビューとして実装済みです。
-> ScannerとActionはプレースホルダーのままです。
-> ソースは `0.1.0-alpha.2` 候補です。Bank JSON/CSV一括検査・列マッピング・導入支援を追加しています。未公開です。
+> ステータス: `0.1.0-alpha.2` 無料OSS alpha。Core、保守的なBankサブセット、Bank CLIを
+> npmの`alpha`タグで公開しています。単一JSON検査、一括JSON/CSV検査、列マッピング、導入支援を提供します。
+> JPYCは未公開のライブラリプレビューです。ScannerとActionはプレースホルダーのままです。
 
 ## 設計目標
 
@@ -45,7 +44,7 @@ packages/
 `@payoutjp/bank`は、保守的なBank検証を提供します。`@payoutjp/jpyc`は、正確な公式Registry
 スナップショットを使用したJPYC送金先およびアプリケーション設定の検証を提供します。
 `@payoutjp/cli`は、Bankの単一検査`validate`とJSON/CSV一括検査`audit`を、テキスト／JSONレポートと
-CI向け終了コード付きで提供します。ソースalpha.2候補では、明示列マッピング、日本語の案内、
+CI向け終了コード付きで提供します。alpha.2では、明示列マッピング、日本語の案内、
 `init`、`doctor`、ローカルProfile/Registry確認も利用できます。
 ScannerとActionは初期構成用のexportのみを保持しています。
 
@@ -54,13 +53,13 @@ GitHub Actionの動作は、実装済みスコープに含まれません。
 
 ## CLI
 
-公開alpha.1のCLIは、UTF-8 JSON形式のBank送金先またはリクエストラッパーを1件受け付けます。送金先を直接
+`validate`はUTF-8 JSON形式のBank送金先またはリクエストラッパーを1件検査します。`audit`はJSON/CSVを一括検査します。送金先を直接
 指定する場合は、Profileを明示的に選択する必要があります。
 
 alpha版をインストールします。
 
 ```sh
-npm install --global @payoutjp/cli@0.1.0-alpha.1
+npm install --global @payoutjp/cli@0.1.0-alpha.2
 payoutjp --version
 ```
 
@@ -93,7 +92,7 @@ node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthet
 
 CIでは`--format json`、`--output <path>`、`--fail-on <error|warning|never>`を使用できます。
 明示的な`--config`または`./payoutjp.config.yml`では、`failOn`とローカルJSONのProfile／Registryパスを
-指定できます。相対パスは設定ファイルを基準に解決されます。ソースalpha.2はBank JSON/CSV一括検査と
+指定できます。相対パスは設定ファイルを基準に解決されます。alpha.2はBank JSON/CSV一括検査と
 Profile/Registry確認にも対応します。[CSV利用ガイド](./docs/PRACTICAL_BANK_CLI.md)を参照してください。
 YAML/JPYC入力、Scanner、専用Actionは後続範囲です。
 
@@ -110,14 +109,12 @@ PayoutJPは、選択したProfileとRegistryに対してローカルデータと
 
 ## 開発
 
-### ソースalpha.2の追加機能を試す
+### Bank CSVを試す
 
-リポジトリ直下で依存関係のインストールと`pnpm build`を済ませてから実行します。
-ディレクトリ移動後もビルドしたCLIを使えるよう、絶対パスを保持します。
+Node.js 24で公開済みのalpha.2をインストールし、架空サンプルを検査します。
 
 ```sh
-PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
-payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+npm install --global @payoutjp/cli@0.1.0-alpha.2
 payoutjp init --template bank-csv --directory ./payoutjp-demo
 cd payoutjp-demo
 payoutjp doctor

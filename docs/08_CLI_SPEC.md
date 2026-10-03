@@ -1,6 +1,6 @@
 # 08 — CLI Specification
 
-> **Source candidate:** `0.1.0-alpha.2`, unpublished. This specification describes implemented Bank
+> **Published alpha:** `0.1.0-alpha.2`. This specification describes implemented Bank
 > commands unless explicitly marked deferred. Published alpha.1 supports single JSON `validate` only.
 > See the [Bank CSV guide](./PRACTICAL_BANK_CLI.md) for a runnable source-checkout quickstart.
 
@@ -284,7 +284,7 @@ A user-facing error must include:
 - safe description;
 - relevant path;
 - remediation;
-- no stack trace or raw input values; this candidate has no debug bypass.
+- no stack trace or raw input values; this alpha has no debug bypass.
 
 ## 12. CLI acceptance tests
 

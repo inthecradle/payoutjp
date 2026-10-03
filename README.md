@@ -5,11 +5,10 @@
 PayoutJP is a local-first compatibility toolkit for validating Japanese bank and JPYC payout
 destinations before they reach a bank or wallet integration.
 
-> Status: `0.1.0-alpha.1` free OSS alpha. Core, the conservative Bank subset, and the
-> single-destination Bank CLI are published on npm under the `alpha` tag. JPYC is implemented as an
-> unpublished library preview. Scanner and Action remain placeholders.
-> Source checkout: `0.1.0-alpha.2` candidate adds Bank JSON/CSV audit, mappings and setup commands.
-> These additions are not yet published.
+> Status: `0.1.0-alpha.2` free OSS alpha. Core, the conservative Bank subset, and the Bank CLI
+> are published on npm under the `alpha` tag. The CLI includes single JSON validation, JSON/CSV
+> batch audit, explicit mappings, and setup commands. JPYC remains an unpublished library preview.
+> Scanner and Action remain placeholders.
 
 ## Design goals
 
@@ -47,20 +46,20 @@ provides conservative Bank validation. `@payoutjp/jpyc` provides JPYC destinatio
 configuration validation against an exact official Registry snapshot. `@payoutjp/cli` provides the
 Bank `validate` and JSON/CSV batch `audit` commands with text/JSON reports and CI exit codes.
 It also provides explicit CSV mappings, Japanese human diagnostics, `init`, `doctor`, and local
-Profile/Registry inspection in the alpha.2 source candidate. Scanner and Action retain bootstrap exports.
+Profile/Registry inspection in alpha.2. Scanner and Action retain bootstrap exports.
 
 Production bank data, provider-specific Bank rules, experimental Zengin/Yucho Profiles, Scanner,
 and GitHub Action behavior remain outside the implemented scope.
 
 ## CLI
 
-The published alpha.1 CLI accepts one UTF-8 JSON Bank destination or request wrapper. A bare destination must
+Use `validate` for one UTF-8 JSON Bank destination/request wrapper and `audit` for Bank JSON/CSV batches. A bare destination must
 select a Profile explicitly:
 
 Install the alpha:
 
 ```sh
-npm install --global @payoutjp/cli@0.1.0-alpha.1
+npm install --global @payoutjp/cli@0.1.0-alpha.2
 payoutjp --version
 ```
 
@@ -93,7 +92,7 @@ node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthet
 
 Use `--format json`, `--output <path>`, and `--fail-on <error|warning|never>` for CI. An explicit
 `--config` or `./payoutjp.config.yml` may provide `failOn` and local JSON Profile/Registry paths;
-relative paths resolve from the config file. Source alpha.2 also supports Bank JSON/CSV audit and
+relative paths resolve from the config file. Alpha.2 also supports Bank JSON/CSV audit and
 Profile/Registry inspection; see [Bank CSV guide](./docs/PRACTICAL_BANK_CLI.md). YAML/JPYC inputs,
 Scanner and dedicated Action remain deferred.
 
@@ -107,14 +106,12 @@ The first alpha publishes `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli
 `@payoutjp/jpyc`, `@payoutjp/scanner`, and `@payoutjp/action` remain private npm packages. Source code
 in this repository is covered by the repository license even when its package is not published.
 
-## Try the alpha.2 source candidate
+## Bank CSV quickstart
 
-After installing dependencies and running `pnpm build` from the repository root, keep the built CLI
-path available while changing directories:
+Install the pinned alpha with Node.js 24 and run the fictional sample:
 
 ```sh
-PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
-payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+npm install --global @payoutjp/cli@0.1.0-alpha.2
 payoutjp init --template bank-csv --directory ./payoutjp-demo
 cd payoutjp-demo
 payoutjp doctor

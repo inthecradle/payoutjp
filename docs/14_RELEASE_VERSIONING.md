@@ -125,9 +125,9 @@ public packages, rejects missing licenses and leaked `workspace:` dependency spe
 them together in a clean temporary consumer, imports public APIs, and executes the packaged CLI.
 Publishing and tagging remain explicit maintainer operations documented in `RELEASING.md`.
 
-### Alpha.2 source candidate and migration
+### Alpha.2 release and migration
 
-The manifests and tool metadata prepare unpublished `0.1.0-alpha.2` for the same three-package
+The published `0.1.0-alpha.2` uses the same three-package
 boundary. Report schemaVersion stays `1`; the bundled `bank-generic-jp@0.1.0` Profile and Registry
 snapshots keep their versions and contents. Tool versions and Profile versions are independent.
 
