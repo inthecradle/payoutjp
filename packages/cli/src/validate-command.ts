@@ -11,6 +11,7 @@ import { resolveBankProfile, resolveBankRegistries } from "./artifacts.js";
 import type { ResolvedCliConfig } from "./config.js";
 import { loadJsonInput } from "./loaders/json.js";
 import { baseSafetyNotice, experimentalProfileNotice } from "./notices.js";
+import { CliInputError, type InputSource } from "./io.js";
 import { version } from "./version.js";
 
 const SingleValidationRequestV1Schema = z.strictObject({
@@ -21,6 +22,7 @@ const SingleValidationRequestV1Schema = z.strictObject({
 
 export interface ValidateCommandOptions {
   readonly inputPath: string;
+  readonly source?: InputSource;
   readonly profileSelector?: string;
   readonly experimental: boolean;
   readonly config: ResolvedCliConfig;
@@ -30,7 +32,7 @@ export interface ValidateCommandOptions {
 export async function runValidateCommand(
   options: ValidateCommandOptions,
 ): Promise<ValidationReportV1> {
-  const input = await loadJsonInput(options.inputPath);
+  const input = await loadJsonInput(options.inputPath, options.source);
   const requestResult = SingleValidationRequestV1Schema.safeParse(input);
   const hasWrapperShape =
     typeof input === "object" &&
@@ -57,7 +59,21 @@ export async function runValidateCommand(
   const destinationInput = requestResult.success ? requestResult.data.destination : input;
   const destinationResult = BankTransferDestinationV1Schema.safeParse(destinationInput);
   if (!destinationResult.success) {
-    throw new PayoutJpInputError();
+    const field = destinationResult.error.issues[0]?.path[0];
+    const known = [
+      "schemaVersion",
+      "rail",
+      "id",
+      "bankCode",
+      "branchCode",
+      "accountType",
+      "accountNumber",
+      "accountHolder",
+    ];
+    throw new CliInputError(
+      "destination_schema",
+      typeof field === "string" && known.includes(field) ? `destination.${field}` : "destination",
+    );
   }
   const profile = await resolveBankProfile(
     selector,

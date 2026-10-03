@@ -2,12 +2,16 @@
 
 ## 1. Current implementation status
 
-- M0 provides buildable `core`, `bank`, `jpyc`, `scanner`, `cli`, and `action` package skeletons.
-- Strict TypeScript, Vitest, Biome, Node.js 24 CI, and `pnpm verify` are configured.
-- No domain validation behavior is implemented yet.
-- The first feature slice will be selected from user evidence and is expected to stay within
-  `core + bank + cli` unless that evidence supports a different boundary.
-- JPYC validation, the configuration scanner, and the dedicated GitHub Action are deferred.
+- Published `0.1.0-alpha.1` contains deterministic Core, conservative Bank validation, and the
+  single-JSON Bank CLI. No production Bank Registry is bundled.
+- The unpublished `0.1.0-alpha.2` source candidate adds Bank JSON/CSV audit with one Profile,
+  per-row diagnostics, explicit mappings, Japanese text, setup/inspection, bounded input, atomic
+  output, and prepared immutable Bank validators.
+- JPYC destination/application-configuration validation is implemented as an unpublished library
+  preview. JPYC CLI/npm expansion, mixed-rail batches, YAML destination input, Scanner, and the
+  dedicated GitHub Action remain deferred. Scanner and Action packages retain skeleton exports.
+- Strict TypeScript, Vitest, Biome, Node.js 24, and `pnpm verify` are configured. CI now defines
+  Ubuntu/macOS/Windows jobs; remote execution results are still pending.
 
 ## 2. Candidate target-state scope
 
@@ -101,18 +105,18 @@ The sections below describe possible release scope. They are not an availability
 
 ## 4. Scope by phase
 
-| Capability | Initial selected slice | Broader RC | Future |
+| Capability | Current source candidate | Broader RC | Future |
 |---|---:|---:|---:|
-| TypeScript API | Selected subset | Yes | Yes |
+| TypeScript API | Core/Bank; private JPYC preview | Yes | Yes |
 | CLI text/JSON | Yes | Yes | Yes |
-| Canonical CSV | If selected | Yes | Yes |
+| Canonical CSV | Bank only, explicit mappings | Yes | Yes |
 | GitHub Action | No | If justified | Yes |
 | SARIF/JUnit | No | If justified | Yes |
 | Bank production Registry | BYO/synthetic only | Required if redistributed | Yes |
-| Registry change impact | If selected | Yes | Yes |
-| Provider compatibility test pack | If selected | Yes | Yes |
-| JPYC current mainnet Registry | No | If justified | Yes |
-| Historical JPYC provenance Registry | No | Maybe | Yes |
+| Registry change impact | Deferred; contract undecided | If justified | Yes |
+| Provider compatibility test pack | Deferred | If justified | Yes |
+| JPYC current mainnet Registry | Private library preview | If justified | Yes |
+| Historical JPYC provenance Registry | Injected-library support | Maybe | Yes |
 | Signed rule packs | No | No | Maybe |
 | Web UI | No | No | Unapproved |
 | Hosted API | No | No | Unapproved |

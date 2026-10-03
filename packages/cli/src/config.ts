@@ -1,8 +1,9 @@
-import { access, readFile } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { PayoutJpConfigurationError } from "@payoutjp/core";
 import { parse } from "yaml";
 import { z } from "zod";
+import { readUtf8 } from "./io.js";
 
 export const failOnThresholdValues = Object.freeze(["error", "warning", "never"] as const);
 export type FailOnThreshold = (typeof failOnThresholdValues)[number];
@@ -64,16 +65,9 @@ function resolveConfiguredPaths(
 }
 
 async function parseConfigFile(path: string): Promise<z.infer<typeof CliConfigFileSchema>> {
-  let contents: Uint8Array;
-  try {
-    contents = await readFile(path);
-  } catch {
-    throw new PayoutJpConfigurationError("PJP_CONFIG_INVALID");
-  }
-
   let decoded: string;
   try {
-    decoded = new TextDecoder("utf-8", { fatal: true }).decode(contents);
+    decoded = await readUtf8(path, undefined, 1024 * 1024);
   } catch {
     throw new PayoutJpConfigurationError("PJP_CONFIG_INVALID");
   }

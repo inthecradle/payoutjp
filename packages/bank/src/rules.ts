@@ -15,14 +15,17 @@ import {
   type BankAccountType,
   type BankTransferDestinationV1,
 } from "./destination.js";
-import type { BankDirectoryRegistryV1 } from "./registry.js";
+import type { BankDirectoryRegistryV1, BankEntryV1 } from "./registry.js";
 
 export type BankRuleParamsV1 = Readonly<Record<string, unknown>>;
 export type BankRuleContextV1 = RuleContextV1<
   BankTransferDestinationV1,
   BankRuleParamsV1,
   BankDirectoryRegistryV1
->;
+> & {
+  readonly bankIndex?: ReadonlyMap<string, readonly BankEntryV1[]>;
+  readonly branchIndex?: ReadonlyMap<string, readonly BankEntryV1[]>;
+};
 
 const EmptyParamsSchema = z.strictObject({});
 const PositiveBoundedIntegerSchema = z.number().int().positive().max(1_000_000);
@@ -115,7 +118,7 @@ export const bankCodeSyntaxRule = defineBankRule({
         messageKey: "bank.code.invalid_format",
         message: "Bank code must contain the configured number of ASCII digits.",
         path: "destination.bankCode",
-        actual: createPublicObservedValue(context.destination.bankCode),
+        actual: createMetadataObservedValue("bank code withheld"),
         expected: `${params.asciiDigits} ASCII digits`,
         remediation: {
           code: "confirm_bank_selection",
@@ -139,7 +142,7 @@ export const branchCodeSyntaxRule = defineBankRule({
         messageKey: "bank.branch.invalid_format",
         message: "Branch code must contain the configured number of ASCII digits.",
         path: "destination.branchCode",
-        actual: createPublicObservedValue(context.destination.branchCode),
+        actual: createMetadataObservedValue("branch code withheld"),
         expected: `${params.asciiDigits} ASCII digits`,
         remediation: {
           code: "confirm_branch_selection",
@@ -160,6 +163,7 @@ function bankDirectories(context: Readonly<BankRuleContextV1>) {
 }
 
 function declaredBanks(context: Readonly<BankRuleContextV1>) {
+  if (context.bankIndex) return context.bankIndex.get(context.destination.bankCode) ?? [];
   return bankDirectories(context).flatMap((registry) =>
     registry.payload.banks.filter((bank) => bank.code === context.destination.bankCode),
   );
@@ -179,7 +183,7 @@ export const bankCodeExistsRule = defineBankRule({
         messageKey: "bank.code.not_found",
         message: "Bank code is absent from the selected Bank Directory Registry.",
         path: "destination.bankCode",
-        actual: createPublicObservedValue(context.destination.bankCode),
+        actual: createMetadataObservedValue("bank code withheld"),
         remediation: {
           code: "confirm_bank_selection",
           message: "Confirm the bank selection against the configured Registry snapshot.",
@@ -190,6 +194,7 @@ export const bankCodeExistsRule = defineBankRule({
 });
 
 function branchOwners(context: Readonly<BankRuleContextV1>) {
+  if (context.branchIndex) return context.branchIndex.get(context.destination.branchCode) ?? [];
   return bankDirectories(context).flatMap((registry) =>
     registry.payload.banks.filter((bank) =>
       bank.branches.some((branch) => branch.code === context.destination.branchCode),
@@ -218,7 +223,7 @@ export const branchCodeExistsRule = defineBankRule({
         messageKey: "bank.branch.not_found",
         message: "Branch code is absent from the selected bank entry.",
         path: "destination.branchCode",
-        actual: createPublicObservedValue(context.destination.branchCode),
+        actual: createMetadataObservedValue("branch code withheld"),
         remediation: {
           code: "confirm_branch_selection",
           message: "Confirm the branch selection against the configured Registry snapshot.",
@@ -246,7 +251,7 @@ export const branchOwnershipRule = defineBankRule({
         messageKey: "bank.branch.wrong_bank",
         message: "Branch exists in the Registry but does not belong to the declared bank.",
         path: "destination.branchCode",
-        actual: createPublicObservedValue(context.destination.branchCode),
+        actual: createMetadataObservedValue("branch code withheld"),
         remediation: {
           code: "confirm_branch_selection",
           message:

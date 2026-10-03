@@ -1,5 +1,8 @@
 # 06 — Initial Rule Catalog
 
+> Source alpha.2 adds a CLI row-schema finding and metadata-only Bank/branch observations.
+> Bank compatibility rules and the bundled `bank-generic-jp@0.1.0` Profile remain unchanged.
+
 > **Implementation status:** The authorized M2 Bank subset implements `BANK-CODE-001` through
 > `BANK-HOLDER-006` as applicable, excluding `BANK-HOLDER-007`. M3 implements all JPYC P0 rules.
 > The experimental Bank rules, Scanner rules, and Registry change-impact rules remain
@@ -27,6 +30,23 @@
 | `experimental` | Rule semantics/source not launch-approved | Profile-dependent, normally warning |
 
 ## 3. Core rules
+
+### Implemented audit input finding
+
+| Rule ID | Default | Message key | Condition |
+|---|---|---|---|
+| `INPUT-SCHEMA-001` | error | `input.schema.invalid` | An audit item/CSV row does not match the Bank destination shape. |
+
+The CLI emits this before Bank rule execution. It is not a configurable Bank rule or a Profile
+rule entry. It carries the selected Profile ID/version, a fixed field path, safe remediation, and
+CSV physical start line or JSON Pointer; it never includes raw data or arbitrary unknown keys.
+The item is FAIL and remaining items continue. Malformed documents, conflicting Profiles, explicit
+input-ID violations, and resource/integrity failures are whole-command errors, not this finding.
+
+### Target-state Core catalog
+
+The `CORE-*` identifiers below describe the original design. Current Core failures use typed
+`PJP_*` application errors before normal rule execution; these identifiers are not emitted by audit.
 
 | Rule ID | Default | Message key | Condition |
 |---|---|---|---|
@@ -65,6 +85,8 @@ Configuration errors may be surfaced as application errors before normal rule ex
 - A synthetic Registry is sufficient for tests but not a production claim.
 - Account number left-padding is never auto-applied.
 - Account holder findings never output raw input.
+- Bank/branch observations use metadata-only displays in alpha.2. This also protects sensitive
+  values accidentally placed in a code field by a wrong column mapping.
 - `BANK-HOLDER-005` uses a Profile-declared exact Unicode character set. `BANK-HOLDER-006`
   supports UTF-8 byte limits in the authorized subset; other bank encodings require sourced,
   explicitly authorized Profiles.

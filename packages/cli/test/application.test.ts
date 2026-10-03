@@ -32,7 +32,7 @@ describe("payoutjp CLI", () => {
   it("prints the version without diagnostics", () => {
     const result = runCli(["--version"]);
     expect(result.status).toBe(0);
-    expect(result.stdout).toBe("0.1.0-alpha.1\n");
+    expect(result.stdout).toBe("0.1.0-alpha.2\n");
     expect(result.stderr).toBe("");
   });
 
@@ -41,7 +41,9 @@ describe("payoutjp CLI", () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("validate");
     expect(result.stdout).toContain("does not verify account existence");
-    expect(result.stdout).not.toMatch(/\b(audit|scan|profiles|registry)\b/u);
+    for (const command of ["audit", "profiles", "registry", "init", "doctor"])
+      expect(result.stdout).toContain(command);
+    expect(result.stdout).not.toMatch(/\bscan\b/u);
     expect(result.stderr).toBe("");
   });
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ItemIdSchema } from "@payoutjp/core";
 
 /** Canonical account types accepted by the Bank destination contract. */
 export const bankAccountTypeValues = Object.freeze([
@@ -23,7 +24,7 @@ export type BankAccountType = z.infer<typeof BankAccountTypeSchema>;
 export const BankTransferDestinationV1Schema = z.strictObject({
   schemaVersion: z.literal("1"),
   rail: z.literal("bank_transfer"),
-  id: z.string().min(1).optional(),
+  id: ItemIdSchema.optional(),
   bankCode: z.string(),
   branchCode: z.string(),
   accountType: BankAccountTypeSchema,

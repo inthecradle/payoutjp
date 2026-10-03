@@ -1,6 +1,6 @@
 {
   "name": "@payoutjp/cli",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Local-first PayoutJP command-line validator",
   "license": "Apache-2.0",
   "repository": {
@@ -45,6 +45,7 @@
     "@payoutjp/bank": "workspace:*",
     "@payoutjp/core": "workspace:*",
     "commander": "^15.0.0",
+    "csv-parse": "^7.0.3",
     "yaml": "^2.9.0",
     "zod": "^4.5.4"
   }

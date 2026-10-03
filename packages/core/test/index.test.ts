@@ -13,7 +13,7 @@ import {
 
 describe("@payoutjp/core", () => {
   it("exports its placeholder version", () => {
-    expect(version).toBe("0.0.0");
+    expect(version).toBe("0.1.0-alpha.2");
   });
 
   it("creates each branded identifier without changing its value", () => {

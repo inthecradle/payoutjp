@@ -8,6 +8,7 @@ PayoutJPは、日本の銀行振込およびJPYCの送金先を、銀行やウ�
 > ステータス: `0.1.0-alpha.1` 無料OSS alpha。Core、保守的なBankサブセット、および単一送金先用の
 > Bank CLIをnpmで`alpha`タグとして公開しています。JPYCは未公開のライブラリプレビューとして実装済みです。
 > ScannerとActionはプレースホルダーのままです。
+> ソースは `0.1.0-alpha.2` 候補です。Bank JSON/CSV一括検査・列マッピング・導入支援を追加しています。未公開です。
 
 ## 設計目標
 
@@ -43,21 +44,23 @@ packages/
 `@payoutjp/core`は、決定論的な検証コントラクト、エンジン、秘匿化プリミティブを提供します。
 `@payoutjp/bank`は、保守的なBank検証を提供します。`@payoutjp/jpyc`は、正確な公式Registry
 スナップショットを使用したJPYC送金先およびアプリケーション設定の検証を提供します。
-`@payoutjp/cli`は、実装済みのJSON単一Bank送金先用`validate`コマンドを、テキスト／JSONレポートと
-CI向け終了コード付きで提供します。ScannerとActionは初期構成用のexportのみを保持しています。
+`@payoutjp/cli`は、Bankの単一検査`validate`とJSON/CSV一括検査`audit`を、テキスト／JSONレポートと
+CI向け終了コード付きで提供します。ソースalpha.2候補では、明示列マッピング、日本語の案内、
+`init`、`doctor`、ローカルProfile/Registry確認も利用できます。
+ScannerとActionは初期構成用のexportのみを保持しています。
 
 本番用銀行データ、プロバイダー固有のBankルール、実験的な全銀／ゆうちょProfile、Scanner、および
 GitHub Actionの動作は、実装済みスコープに含まれません。
 
 ## CLI
 
-現在のCLIは、UTF-8 JSON形式のBank送金先またはリクエストラッパーを1件受け付けます。送金先を直接
+公開alpha.1のCLIは、UTF-8 JSON形式のBank送金先またはリクエストラッパーを1件受け付けます。送金先を直接
 指定する場合は、Profileを明示的に選択する必要があります。
 
 alpha版をインストールします。
 
 ```sh
-npm install --global @payoutjp/cli@alpha
+npm install --global @payoutjp/cli@0.1.0-alpha.1
 payoutjp --version
 ```
 
@@ -90,8 +93,9 @@ node packages/cli/dist/main.js validate fixtures/bank/destinations/valid-synthet
 
 CIでは`--format json`、`--output <path>`、`--fail-on <error|warning|never>`を使用できます。
 明示的な`--config`または`./payoutjp.config.yml`では、`failOn`とローカルJSONのProfile／Registryパスを
-指定できます。相対パスは設定ファイルを基準に解決されます。YAML／CSV入力、バッチ監査、Profile／Registry
-探索、JPYCのCLI検証、Scanner、および専用Actionの動作は、このM4サブセットには含まれません。
+指定できます。相対パスは設定ファイルを基準に解決されます。ソースalpha.2はBank JSON/CSV一括検査と
+Profile/Registry確認にも対応します。[CSV利用ガイド](./docs/PRACTICAL_BANK_CLI.md)を参照してください。
+YAML/JPYC入力、Scanner、専用Actionは後続範囲です。
 
 PayoutJPは、選択したProfileとRegistryに対してローカルデータと設定を検査します。口座の実在、受取人の
 本人性、ウォレットの所有権、支払いの成功は検証しません。本番用Bank Registryは同梱していません。
@@ -105,6 +109,30 @@ PayoutJPは、選択したProfileとRegistryに対してローカルデータと
 リポジトリのライセンスが適用されます。
 
 ## 開発
+
+### ソースalpha.2の追加機能を試す
+
+リポジトリ直下で依存関係のインストールと`pnpm build`を済ませてから実行します。
+ディレクトリ移動後もビルドしたCLIを使えるよう、絶対パスを保持します。
+
+```sh
+PAYOUTJP_CLI="$PWD/packages/cli/dist/main.js"
+payoutjp() { node "$PAYOUTJP_CLI" "$@"; }
+payoutjp init --template bank-csv --directory ./payoutjp-demo
+cd payoutjp-demo
+payoutjp doctor
+payoutjp audit recipients.csv --profile bank-generic-jp@0.1.0 --mapping columns.json --locale ja
+```
+
+架空データ2件を検査します。2件目は意図的な異常値で、終了コード1とCSVの修正箇所が出ます。
+その架空の口座番号`12X4567`を手動で`0123456`へ直すとPASSになります。値の自動修正はしません。
+
+全結果は`--format json --output report.json`で保存します。既存audit reportの置換には
+`--overwrite-report`が必要です。行の型不正は`INPUT-SCHEMA-001`として残りの行も検査し、
+構文破損や設定不正は全体エラーにします。IDは既定で行順から生成します。
+[CSV利用ガイド](./docs/PRACTICAL_BANK_CLI.md)に列対応、JSONバッチ、stdin、Registry、ID、上限、CI例を記載しています。
+
+### 開発環境と検証
 
 必要な環境:
 
@@ -125,6 +153,9 @@ pnpm release:check
 インストール、manifestとライセンスの検査、公開APIのimport、パッケージ化されたCLIの実行を行います。
 このコマンドがpublish、タグ作成、成果物の保存を行うことはありません。
 
+`pnpm benchmark:bank`は合成データ1万件の読込・解析・検査・JSON化を計測します。
+CIはUbuntu/macOS/Windowsで実行する構成です。3 OSでの成功確認はGitHub上の実行後に行います。
+
 プロジェクトとリリースの方針については、[CONTRIBUTING.md](./CONTRIBUTING.md)、
 [SECURITY.md](./SECURITY.md)、[CHANGELOG.md](./CHANGELOG.md)、[RELEASING.md](./RELEASING.md)を
 参照してください。
@@ -138,6 +169,7 @@ pnpm release:check
 - [ルールカタログ](./docs/06_RULE_CATALOG.md)
 - [RegistryとProfile](./docs/07_REGISTRIES_AND_PROFILES.md)
 - [CLI仕様](./docs/08_CLI_SPEC.md)
+- [CSV利用ガイド](./docs/PRACTICAL_BANK_CLI.md)
 - [Scanner仕様](./docs/09_SCANNER_SPEC.md)
 - [GitHub Action仕様](./docs/10_GITHUB_ACTION_SPEC.md)
 - [テスト戦略](./docs/11_TEST_STRATEGY.md)

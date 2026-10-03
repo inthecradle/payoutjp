@@ -83,6 +83,7 @@ try {
   const overrides = {
     ...dependencies,
     commander: "15.0.0",
+    "csv-parse": "7.0.3",
     yaml: "2.9.0",
     zod: "4.5.4",
   };
@@ -143,6 +144,41 @@ try {
   ) {
     throw new Error("Packaged CLI did not return the expected alpha report");
   }
+
+  const csvPath = join(consumerDirectory, "recipients.csv");
+  const mappingPath = join(consumerDirectory, "columns.json");
+  writeFileSync(csvPath, "銀行,支店,種別,番号,名義\n1234,001,普通,0123456,SYNTHETIC\n");
+  writeFileSync(
+    mappingPath,
+    JSON.stringify({
+      schemaVersion: "1",
+      columns: {
+        bankCode: "銀行",
+        branchCode: "支店",
+        accountType: "種別",
+        accountNumber: "番号",
+        accountHolder: "名義",
+      },
+      values: { accountType: { 普通: "ordinary" } },
+    }),
+  );
+  const auditOutput = execFileSync(
+    process.execPath,
+    [
+      join(consumerDirectory, "node_modules/@payoutjp/cli/dist/main.js"),
+      "audit",
+      csvPath,
+      "--profile",
+      "bank-generic-jp@0.1.0",
+      "--mapping",
+      mappingPath,
+      "--format",
+      "json",
+    ],
+    { cwd: consumerDirectory, encoding: "utf8" },
+  );
+  if (JSON.parse(auditOutput).summary.passedItems !== 1)
+    throw new Error("Packaged CSV mapping failed");
 
   process.stdout.write(`Packed consumer check passed for ${[...archives.keys()].join(", ")}\n`);
 } finally {

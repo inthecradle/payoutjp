@@ -44,4 +44,5 @@ export {
 export {
   type ValidateBankTransferDestinationV1Options,
   validateBankTransferDestinationV1,
+  prepareBankTransferValidatorV1,
 } from "./validate.js";

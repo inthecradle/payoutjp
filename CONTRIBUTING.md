@@ -21,6 +21,16 @@ pnpm verify
 
 Run `pnpm release:check` when changing public exports, package metadata, the CLI, or release files.
 
+For Bank audit changes, run `pnpm benchmark:bank` after building and report the Node version,
+platform, median duration, and peak RSS. This uses synthetic data; it is not a production-bank
+performance claim. `pnpm verify` runs in the Ubuntu/macOS/Windows CI matrix; benchmarks and packed
+consumer checks run on Linux. Dependency installation and release audits may access npm; validation
+and validation tests must remain local and make no outbound calls.
+
+The [Bank CSV guide](./docs/PRACTICAL_BANK_CLI.md) documents the alpha.2 source commands. Test new
+examples from the documented working directory with synthetic data. Keep root/package READMEs,
+CLI contracts, and [CHANGELOG.md](./CHANGELOG.md) aligned with user-visible changes.
+
 ## Pull requests
 
 - Keep changes focused and explain externally visible behavior changes.

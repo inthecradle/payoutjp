@@ -14,6 +14,25 @@ The `0.1.0-alpha.1` npm set contains only:
 The workspace root and JPYC, Scanner, and Action packages remain private. No production Bank
 Registry is included.
 
+## Next local candidate
+
+The source manifests now prepare `0.1.0-alpha.2` for the same Core/Bank/CLI boundary.
+The changes are listed under Unreleased in [CHANGELOG.md](./CHANGELOG.md). Review the
+[Bank CSV guide](./docs/PRACTICAL_BANK_CLI.md), migration notes, and cross-platform CI results before
+a separate maintainer publish. Never reuse the alpha.1 tag or version.
+
+## GitHub review preparation
+
+1. Prepare a feature branch and focused commit in the public product repository. Keep private
+   planning, commercial evidence, and internal approval documents in the private repository.
+2. Prepare a PR description covering batch behavior, privacy/output changes, migration, validation,
+   and remaining checks. Local branch/commit preparation does not publish packages or tags.
+3. After pushing and opening the PR, confirm `pnpm verify` passes on Ubuntu/macOS/Windows, plus
+   the Linux benchmark and packed-consumer release check. Record the actual runs before marking
+   cross-platform verification complete.
+4. Review and merge the product PR, and separately review the private planning update. Confirm
+   unpublished candidate wording until the maintainer explicitly starts the release.
+
 ## Preflight
 
 1. Confirm the release commit is on `main` and the worktree is clean.
@@ -23,6 +42,9 @@ Registry is included.
 5. Run `pnpm install --frozen-lockfile` with Node.js 24 and pnpm 11.25.0.
 6. Run `pnpm release:check`.
 7. Review package manifests, tarball file lists, licenses, README, CHANGELOG, and the release diff.
+8. Confirm successful CI on all three operating systems for the release commit.
+9. When release is authorized, move Unreleased notes into a version/date section and update source
+   and package README availability statements to the actual published state.
 
 `release:check` packs into an operating-system temporary directory, installs the three tarballs into
 a clean temporary consumer with exact external dependency overrides, verifies public imports,
@@ -40,9 +62,9 @@ pnpm --filter @payoutjp/bank publish --access public --tag alpha
 pnpm --filter @payoutjp/cli publish --access public --tag alpha
 ```
 
-Verify the installed CLI from a clean directory before creating the immutable
-`v0.1.0-alpha.1` tag and GitHub Release. Do not create moving `v0` or `v0.1` tags for this CLI-only
-alpha; those tags are reserved for a future dedicated Action release.
+Verify the installed CLI from a clean directory before creating the immutable full-version tag
+(next candidate: `v0.1.0-alpha.2`) and GitHub Release. Do not create moving `v0` or `v0.1` tags for
+this CLI-only alpha; those tags are reserved for a future dedicated Action release.
 
 ## Rollback
 

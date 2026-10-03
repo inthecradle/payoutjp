@@ -1,5 +1,7 @@
-/** Placeholder package version for the repository bootstrap. */
-export const version = "0.0.0";
+/** Version of the local Core package candidate. */
+export const version = "0.1.0-alpha.2";
+
+export { ItemIdSchema } from "./identifier-schema.js";
 
 export {
   aggregateItemStatus,

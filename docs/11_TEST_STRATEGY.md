@@ -1,5 +1,9 @@
 # 11 — Test Strategy
 
+> Source alpha.2 includes Bank audit, CSV, setup, and prepared-validator tests. Scanner/Action test
+> sections remain target-state requirements. The 2026-10-03 local run passed 27 files / 365 tests
+> on Node 24.14.0/macOS; Linux/Windows runs and independent user evaluation remain unverified.
+
 ## 1. Objectives
 
 Testing must prove:
@@ -168,6 +172,27 @@ The implemented M4 CLI suite runs the built binary as a child process and covers
 output, config and flag precedence, Profile/Registry loading, the experimental gate, the complete
 `fail-on` matrix, exit codes 0/1/2/4, output files, and redaction across stdout/stderr.
 
+### Alpha.2 practical Bank checks
+
+- CSV quoting, BOM, multiline physical source lines, preserved leading zeros, explicit Japanese
+  column/type mappings, duplicate/unknown headers, ignored columns, and malformed/empty rows.
+- JSON per-row schema findings, one-Profile enforcement, JSON Pointers, strict wrappers, stable
+  generated IDs, and explicit input-ID uniqueness/length/mismatch/privacy behavior.
+- Bounded stdin/file input, record/field/row/finding limits, and no successful silent truncation.
+- Atomic output, source/config/mapping/Profile/Registry protection, symlink/hard-link aliases,
+  prior-report preservation, explicit audit overwrite, and legacy validate replacement.
+- Cross-field redaction, parser/argument error sanitization, Japanese text, and complete JSON
+  when text findings are capped.
+- Init refusal to replace existing directories, doctor configuration/digest failures, and installed
+  Profile/Registry inspection with coverage metadata.
+- Prepared-validator parity, immutable owned snapshots, and isolation from later caller mutations.
+- Validation spies cover `fetch`, socket connection, HTTP/HTTPS request, and DNS lookup boundaries.
+
+`pnpm benchmark:bank` runs synthetic 10,000-row audits against 1,000 banks / 30,000 branches,
+with normal and 10% invalid cases. It includes input read/parse, artifact preparation, validation,
+and JSON serialization, and excludes process startup/report file writing. Report median duration
+and peak RSS; goals are 5 seconds and 512 MiB. Local results are not hosted-CI or production-data evidence.
+
 ## 9. GitHub Action tests
 
 - unit test action input mapping with mocked `@actions/core`.
@@ -236,10 +261,15 @@ Coverage does not replace fixture quality.
 
 ### Free OSS alpha
 
+Alpha.2 configures `pnpm verify` on Ubuntu/macOS/Windows with Node.js 24 and the frozen lockfile.
+Synthetic benchmarks and `pnpm release:check` run on Linux. Actual successful workflow runs must
+be checked after GitHub reflection; the matrix alone is not proof of cross-platform support.
+
 - locally pack `@payoutjp/core`, `@payoutjp/bank`, and `@payoutjp/cli`;
 - reject private metadata, missing license/README, and leaked `workspace:` dependencies;
 - install the tarballs together into a clean temporary consumer;
 - import public Core/Bank APIs and execute the packaged CLI;
+- execute mapped Japanese CSV audit from the packed CLI and verify report v1/source lines;
 - pin external dependency overrides in the temporary consumer; installation may use the npm Registry,
   while validation execution remains no-network.
 

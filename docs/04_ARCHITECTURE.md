@@ -1,5 +1,11 @@
 # 04 — Architecture
 
+> Current source alpha.2 implements Core/Bank validation, the JPYC library preview, and Bank CLI
+> validation/audit/setup. Scanner/Action and remote data delivery below remain target-state designs.
+> Bank audit resolves one Profile and its pinned local Registries, calls
+> `prepareBankTransferValidatorV1` once, and reuses its owned immutable snapshot/indexes per row.
+> CSV/input/report I/O stays in the CLI; libraries remain pure and perform no network calls.
+
 ## 0. Implementation status
 
 This document describes a candidate target-state architecture. M0 creates all six package
